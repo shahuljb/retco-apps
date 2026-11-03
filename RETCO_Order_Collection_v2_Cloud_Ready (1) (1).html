@@ -1,0 +1,1126 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script>try{var __t=localStorage.getItem('retco_oc_theme')||'light';if(__t==='dark'||__t==='light')document.documentElement.setAttribute('data-theme',__t);}catch(e){document.documentElement.setAttribute('data-theme','light')}</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RETCO Order Collection</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#F7F2E7; --surface:#FFFFFF; --surface-2:#ECE3D0; --border:#D8CBAE;
+  --fg:#1F2A33; --muted:#6B6456; --accent:#2C4A6E; --accent-fg:#FFFFFF;
+  --warn:#A3432F; --warn-bg:#F3DCD3; --good:#2F6B45; --good-bg:#DCEADF;
+  --chip-bg:#E4ECF2; --wa:#25D366; --wa-fg:#FFFFFF;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181C; --surface:#1C2227; --surface-2:#232A30; --border:#333B42;
+    --fg:#E8E6DF; --muted:#9AA3AA; --accent:#6FA8D8; --accent-fg:#0B1620;
+    --warn:#E08769; --warn-bg:#3A2620; --good:#7FCB94; --good-bg:#1E3326;
+    --chip-bg:#202C34;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14181C; --surface:#1C2227; --surface-2:#232A30; --border:#333B42;
+  --fg:#E8E6DF; --muted:#9AA3AA; --accent:#6FA8D8; --accent-fg:#0B1620;
+  --warn:#E08769; --warn-bg:#3A2620; --good:#7FCB94; --good-bg:#1E3326;
+  --chip-bg:#202C34;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:"Public Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Lora","Public Sans",serif;font-weight:600;margin:0}
+.num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+input,select,textarea{font-family:inherit;font-size:15px;color:var(--fg);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 10px;width:100%}
+input.num-input{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;text-align:right}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font-family:inherit;cursor:pointer}
+.app-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px 8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.app-bar .tabs{display:flex;gap:6px;overflow-x:auto;flex-basis:100%;padding-bottom:2px}
+.app-bar .tabs .tabbtn{flex-shrink:0}
+.app-bar h1{font-size:17px;color:var(--accent);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabbtn{background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.tabbtn[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.wrap{max-width:720px;margin:0 auto;padding:14px 16px calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.snapshot{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:14px 16px 0;max-width:720px;margin:0 auto;width:100%}
+@media(min-width:480px){.snapshot{grid-template-columns:repeat(4,1fr)}}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px;min-width:0}
+.tile .lbl{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.tile .val{font-size:17px;font-weight:600;margin-top:2px}
+.tile .val.warn{color:var(--warn)}
+.tile .val.good{color:var(--good)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}
+.field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:3px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.form-stack{display:flex;flex-direction:column;gap:12px}
+.section-label{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:2px}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:10px 6px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.breakdown{display:flex;flex-direction:column;gap:4px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:10px 13px}
+.breakdown .brow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)}
+.breakdown .brow.total{font-size:16px;font-weight:700;color:var(--fg);border-top:1px solid var(--border);padding-top:6px;margin-top:2px}
+.checkrow{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--fg)}
+.checkrow input[type=checkbox]{width:auto}
+.btn-primary{background:var(--accent);color:var(--accent-fg);border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;width:100%}
+.btn-secondary{background:var(--surface);color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:12.5px;font-weight:600}
+.codebox{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;line-height:1.4;resize:none;word-break:break-all}
+.ghost-btn{background:none;border:1px dashed var(--border);border-radius:10px;padding:10px;font-size:13px;font-weight:600;color:var(--accent);width:100%}
+.item-block{border:1px solid var(--border);border-radius:12px;padding:11px;display:flex;flex-direction:column;gap:9px;background:var(--surface-2)}
+.item-block-head{display:flex;gap:8px;align-items:center}
+.item-block-head input{flex:1}
+.icon-btn{background:none;border:none;color:var(--muted);font-size:18px;padding:2px 6px;line-height:1;flex-shrink:0}
+.item-total-line{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);padding-top:2px;border-top:1px solid var(--border)}
+.item-total-line b{color:var(--fg);font-weight:700;font-family:"IBM Plex Mono",monospace}
+.searchbar{position:relative}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:2px}
+.toolbar button, .toolbar label{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:7px 11px;font-size:12px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.toolbar button:hover, .toolbar label:hover{color:var(--fg);border-color:var(--accent)}
+.filter-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.filter-chips button{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:6px 13px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.filter-chips button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.day-group{display:flex;flex-direction:column;gap:8px}
+.day-head{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:4px 2px 0}
+.sale-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px 13px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.sale-row-top{display:flex;align-items:flex-start;gap:10px}
+.sale-row-main{flex:1;min-width:0}
+.sale-row-main .shop{font-size:14px;font-weight:700}
+.sale-row-main .prod{font-size:12.5px;color:var(--muted);margin-top:1px}
+.sale-row-amt{text-align:right;flex-shrink:0}
+.sale-row-amt .amt{font-size:14.5px;font-weight:700}
+.sale-row-amt .amt .strike{font-size:11px;color:var(--muted);text-decoration:line-through;font-weight:500;margin-right:4px}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:10px;margin-top:3px;margin-left:4px;text-transform:uppercase;letter-spacing:.02em}
+.badge:first-of-type{margin-left:0}
+.badge.cash{background:var(--good-bg);color:var(--good)}
+.badge.credit{background:var(--warn-bg);color:var(--warn)}
+.badge.partial{background:#F8ECD5;color:#925E12}
+.badge.paid{background:var(--good-bg);color:var(--good)}
+.badge.returned{background:var(--chip-bg);color:var(--muted)}
+.sale-detail{border-top:1px solid var(--border);padding-top:9px;display:flex;flex-direction:column;gap:9px;font-size:12.5px;color:var(--muted)}
+.sale-detail .drow{display:flex;justify-content:space-between;gap:10px}
+.sale-detail .drow b{color:var(--fg);font-weight:600}
+.detail-actions{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.detail-actions button{flex:1;min-width:80px}
+.btn-warn{background:var(--warn);color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12.5px;font-weight:600}
+.btn-good{background:var(--good);color:#fff;border:none;border-radius:10px;padding:9px 12px;font-size:12.5px;font-weight:600}
+.btn-neutral{background:var(--chip-bg);color:var(--accent);border:none;border-radius:10px;padding:9px 12px;font-size:12.5px;font-weight:600}
+.btn-wa{background:var(--wa);color:var(--wa-fg);border:none;border-radius:10px;padding:9px 12px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.bill-item{border-top:1px solid var(--border);padding-top:9px;display:flex;flex-direction:column;gap:6px}
+.bill-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.bill-item-name{font-size:13px;font-weight:700;color:var(--fg)}
+.bill-item-sub{font-size:11.5px;color:var(--muted);margin-top:1px}
+.bill-item-amt{font-size:13px;font-weight:700;text-align:right;color:var(--fg);flex-shrink:0}
+.bill-item-amt .strike{font-size:10.5px;color:var(--muted);text-decoration:line-through;font-weight:500;margin-right:4px}
+.bill-item-actions{display:flex;gap:7px}
+.bill-item-actions button{flex:1;padding:6px 9px;font-size:11px;border-radius:8px}
+.action-box{display:flex;flex-direction:column;gap:8px;margin-top:4px;background:var(--chip-bg);border-radius:10px;padding:10px}
+.action-box .rrow{display:flex;gap:8px;align-items:center}
+.action-box input, .action-box select{flex:1}
+.action-box .rpreview{font-size:11.5px;color:var(--muted);text-align:right}
+.sub-history{display:flex;flex-direction:column;gap:5px;margin-top:4px;background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.sub-history .hline{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;padding:3px 0;border-top:1px dashed var(--border)}
+.sub-history .hline:first-of-type{border-top:none}
+.sub-history .hline b{color:var(--fg)}
+.shop-group{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 14px;display:flex;flex-direction:column;gap:8px}
+.shop-group-head{display:flex;justify-content:space-between;align-items:baseline}
+.shop-group-head .name{font-size:14.5px;font-weight:700}
+.shop-group-head .due{font-size:15px;font-weight:700;color:var(--warn)}
+.bill-line-wrap{display:flex;flex-direction:column;border-top:1px solid var(--border);padding:8px 0;gap:6px}
+.bill-line{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bill-line .binfo{font-size:12.5px;color:var(--muted);min-width:0}
+.bill-line .binfo b{color:var(--fg)}
+.bill-line .bamt{font-size:13px;font-weight:600;white-space:nowrap}
+.bill-line-actions{display:flex;gap:6px;align-items:center}
+.bill-line-actions button{flex-shrink:0;border:none;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:700}
+.empty-state{text-align:center;padding:40px 16px;color:var(--muted);font-size:13.5px;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:var(--accent-fg);padding:9px 18px;border-radius:20px;font-size:13.5px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .25s;max-width:90vw;text-align:center;z-index:99}
+.toast.show{opacity:1}
+.note{font-size:11.5px;color:var(--muted);line-height:1.5}
+.sale-row.dim{opacity:.65}
+.badge.today{background:#F8ECD5;color:#925E12}
+.badge.late{background:var(--warn-bg);color:var(--warn)}
+.prep-line{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--fg);padding:3px 0}
+.prep-line b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600}
+.linkbanner{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;background:var(--chip-bg);border:1px solid var(--border);border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:var(--fg)}
+.linkbanner button{flex-shrink:0}
+.t-warn{color:var(--warn)!important}.t-good{color:var(--good)!important}
+textarea{resize:vertical}
+.modal-back{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:var(--surface);color:var(--fg);border:1px solid var(--border);border-radius:14px;padding:16px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px}
+.modal-actions{display:flex;flex-direction:column;gap:8px}
+@media print{body>*:not(#invoiceView){display:none!important}#invoiceView{position:static!important;overflow:visible!important}#invoiceView .no-print{display:none!important}}
+[hidden]{display:none!important}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.row-actions>*{flex:1;min-width:84px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumb{width:64px;height:64px;border-radius:8px;border:1px solid var(--border);object-fit:cover;cursor:pointer;background:var(--surface-2)}
+.photo-view{position:fixed;left:0;top:0;right:0;bottom:0;z-index:400;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px}
+.photo-view img{max-width:100%;max-height:78vh;border-radius:8px}
+.bar{height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden;border:1px solid var(--border)}
+.bar>i{display:block;height:100%;background:var(--accent)}
+.bar.over>i{background:var(--warn)}
+.badge.due{background:var(--warn-bg);color:var(--warn)}
+.badge.ok{background:var(--good-bg);color:var(--good)}
+.badge.upi{background:var(--chip-bg);color:var(--accent)}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:3px 0}
+.kv b{font-weight:600}
+.msg{font-size:12.5px;line-height:1.5;color:var(--fg);background:var(--chip-bg);border-radius:10px;padding:9px 11px}
+.msg.err{background:var(--warn-bg);color:var(--warn)}
+details.card>summary{cursor:pointer;font-weight:700;font-size:13.5px}
+.mini{font-size:11.5px;color:var(--muted)}
+input[type=file]{padding:8px;font-size:13px}
+textarea.big{min-height:120px;font-size:16px;line-height:1.4}
+.chipset{display:flex;flex-wrap:wrap;gap:6px}
+.chipset button{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:7px 12px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.chipset button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.chipset.pos button[aria-selected="true"]{background:var(--good);border-color:var(--good);color:#fff}
+.chipset.neg button[aria-selected="true"]{background:var(--warn);border-color:var(--warn);color:#fff}
+.fab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;background:var(--accent);color:var(--accent-fg);border:none;border-radius:28px;padding:14px 20px;font-size:15px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.badge.pri-Critical{background:var(--warn);color:#fff}.badge.pri-High{background:var(--warn-bg);color:var(--warn)}.badge.pri-Medium{background:#F8ECD5;color:#925E12}.badge.pri-Low{background:var(--chip-bg);color:var(--muted)}
+.said{font-size:13px;line-height:1.45;color:var(--fg);white-space:pre-wrap;word-break:break-word}
+.said.clip{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tl{border-left:3px solid var(--border);padding-left:11px;margin-left:4px;display:flex;flex-direction:column;gap:10px}
+.tl .ev{position:relative}.tl .ev:before{content:"";position:absolute;left:-17px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.tl .ev.neg:before{background:var(--warn)}.tl .ev.pos:before{background:var(--good)}
+.rank{display:flex;flex-direction:column;gap:6px}
+.rank .rr{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.rank .rr .nm{flex:0 0 38%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank .rr .bar{flex:1}.rank .rr b{flex:0 0 28px;text-align:right}
+.hist{font-size:11px;color:var(--muted);border-top:1px dashed var(--border);padding-top:6px}
+.sec-h{font-size:14px;font-weight:700}
+.tabs .tabbtn.hot:after{content:attr(data-n);margin-left:6px;background:var(--warn);color:#fff;border-radius:9px;padding:0 6px;font-size:10.5px}
+
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bottomnav button{background:none;border:none;padding:9px 2px 8px;font-size:11.5px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+.bottomnav button[aria-selected="true"]{color:var(--accent)}
+.bottomnav button i{font-style:normal;font-size:18px;line-height:1}
+.wrap{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+.subtabs{display:flex;gap:6px;overflow-x:auto;padding:10px 16px 0;max-width:720px;margin:0 auto}
+.subtabs button{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:7px 13px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.subtabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.tile.click,.sale-row.click{cursor:pointer}.tile.click:active,.sale-row.click:active{opacity:.75}
+.tile .sub{font-size:10.5px;color:var(--muted);margin-top:2px}
+.hero{background:var(--accent);color:var(--accent-fg);border-radius:16px;padding:14px 16px;cursor:pointer}
+.hero .lbl{font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.05em}.hero .val{font-size:28px;font-weight:700;margin-top:2px}
+.hero .row{display:flex;gap:14px;margin-top:8px;font-size:12px;opacity:.95;flex-wrap:wrap}
+.crumb{display:flex;align-items:center;gap:10px}.crumb h3{flex:1;font-size:17px}
+.badge.bad{background:var(--warn);color:#fff}.badge.warnb{background:#F8ECD5;color:#925E12}
+.agebar{display:flex;height:12px;border-radius:6px;overflow:hidden;border:1px solid var(--border)}.agebar i{display:block;height:100%}
+.pos{color:var(--good)}.neg{color:var(--warn)}
+.stmt .brow{font-size:13px}.stmt .brow.sub{padding-left:12px}.stmt .brow.head{font-weight:700;color:var(--fg);margin-top:6px}
+.demo-banner{background:#F8ECD5;color:#925E12;font-size:12px;font-weight:700;text-align:center;padding:5px 10px}
+.chk{display:flex;align-items:center;gap:8px}.chk input{width:auto}
+.sale-row .said{margin-top:3px}
+.insbox{border:1px solid var(--border);border-radius:12px;padding:10px;background:var(--surface-2);display:flex;flex-direction:column;gap:8px}
+.sug{display:flex;flex-direction:column;gap:6px}.sug button{text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13.5px;color:var(--fg)}
+.sug button b{font-weight:700}.sug button span{color:var(--muted);font-size:12px}
+.shopcard{background:var(--chip-bg);border:1px solid var(--border);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:13px}
+textarea.notes{min-height:84px;font-size:16px;line-height:1.45}
+.bigchips .chipset button{padding:10px 13px;font-size:13.5px}
+.gen{background:var(--surface-2);border-left:3px solid var(--accent);padding:7px 10px;border-radius:6px;font-size:13px;white-space:pre-wrap;word-break:break-word}
+.ins{background:#F8ECD5;border-left:3px solid #C9A227;padding:7px 10px;border-radius:6px;font-size:13px;white-space:pre-wrap;word-break:break-word;color:#4a3a10}
+:root[data-theme="dark"] .ins{background:#3a3220;color:#f1e3b5}
+</style>
+</head>
+<body>
+<div class="app-bar">
+  <h1 id="appTitle">RETCO &middot; Order Collection <small style="font-size:10px;opacity:.65">v2 cloud-ready</small></h1>
+  <button class="tabbtn" id="btnTheme" type="button">Theme</button>
+</div>
+<div id="subtabs" class="subtabs"></div>
+<div id="views"></div>
+<div class="note" style="margin:8px 12px;text-align:center">V2 foundation · Local-first preserved · Supabase authentication scaffold · Business sync awaits approved schema mapping and RLS tests</div>
+<nav class="bottomnav" id="bottomnav"></nav>
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+"use strict";
+/* ================= helpers ================= */
+const $ = id => document.getElementById(id);
+function T(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
+function add(p){ for (let i = 1; i < arguments.length; i++){ const c = arguments[i]; if (c) p.appendChild(c); } return p; }
+const num = v => { const n = parseFloat(v); return isFinite(n) ? n : 0; };
+const round2 = n => Math.round((n + Number.EPSILON) * 100) / 100;
+const MONEY = n => { n = round2(num(n)); const neg = n < 0; n = Math.abs(n); return (neg ? '-Rs. ' : 'Rs. ') + n.toLocaleString('en-IN', {maximumFractionDigits: n % 1 === 0 ? 0 : 2}); };
+const pad = n => String(n).padStart(2, '0');
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+const fmtDate = ds => { if (!ds) return ''; const p = ds.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
+const monthKey = ds => (ds || '').slice(0, 7);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const esc = s => String(s === undefined || s === null ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'})[c]);
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const monthLabel = k => { const p = (k || '').split('-'); return p.length > 1 ? MONTHS[+p[1] - 1] + ' ' + p[0] : ''; };
+const addMonths = (k, n) => { const p = k.split('-'); const d = new Date(+p[0], +p[1] - 1 + n, 1); return d.getFullYear() + '-' + pad(d.getMonth() + 1); };
+const monthEnd = k => { const p = k.split('-'); return k + '-' + pad(new Date(+p[0], +p[1], 0).getDate()); };
+const daysBetween = (a, b) => Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000);
+const norm = s => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+let toastTimer = null;
+function toast(m){ const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600); }
+
+/* ================= form helpers ================= */
+function labeled(label, node){ const f = T('div', 'field'); add(f, T('label', null, label), node); return f; }
+function numInput(value, oninput, ph){
+  const i = T('input', 'num-input'); i.type = 'text'; i.inputMode = 'decimal'; i.value = (value === 0 || value) ? String(value) : ''; if (ph) i.placeholder = ph;
+  i.addEventListener('input', () => { const v = i.value.replace(/[^0-9.]/g, ''); if (v !== i.value) i.value = v; oninput(v === '' ? null : parseFloat(v)); });
+  return i;
+}
+function textInput(type, value, oninput, o){
+  o = o || {}; const i = T('input'); i.type = type || 'text'; i.value = value || ''; if (o.ph) i.placeholder = o.ph; if (o.list) i.setAttribute('list', o.list); if (o.id) i.id = o.id;
+  i.addEventListener('input', () => oninput(i.value)); if (o.onchange) i.addEventListener('change', () => o.onchange(i.value));
+  return i;
+}
+function selectInput(opts, value, onchange){
+  const s = T('select'); opts.forEach(o => { const v = typeof o === 'string' ? o : o.v, l = typeof o === 'string' ? o : o.l; const op = T('option', null, l); op.value = v; if (v === value) op.selected = true; s.appendChild(op); });
+  s.addEventListener('change', () => onchange(s.value)); return s;
+}
+function seg(opts, value, onchange){
+  const d = T('div', 'seg');
+  opts.forEach(o => { const v = typeof o === 'string' ? o : o.v, l = typeof o === 'string' ? o : o.l; const b = T('button', null, l); b.setAttribute('data-v', v); b.type = 'button'; b.setAttribute('aria-selected', String(v === value)); b.addEventListener('click', () => onchange(v)); d.appendChild(b); });
+  return d;
+}
+function chips(opts, value, onchange, id){
+  const d = T('div', 'filter-chips'); if (id) d.id = id;
+  opts.forEach(o => { const v = typeof o === 'string' ? o : o.v, l = typeof o === 'string' ? o : o.l; const b = T('button', null, l); b.setAttribute('data-v', v); b.setAttribute('aria-selected', String(v === value)); b.addEventListener('click', () => onchange(v)); d.appendChild(b); });
+  return d;
+}
+function brow(l, v, cls){ const r = T('div', 'brow' + (cls ? ' ' + cls : '')); add(r, T('span', null, l), T('span', 'num', v)); return r; }
+function kv(l, v, cls){ const r = T('div', 'kv'); add(r, T('span', 'mini', l), T('b', 'num' + (cls ? ' ' + cls : ''), v)); return r; }
+function tile(l, v, cls){ const t = T('div', 'tile'); add(t, T('div', 'lbl', l), T('div', 'val num' + (cls ? ' ' + cls : ''), v)); return t; }
+function armedDelete(label, onDelete){
+  const b = T('button', 'btn-warn', label || 'Delete'); let armed = false, tm = null;
+  b.addEventListener('click', e => { e.stopPropagation(); if (!armed){ armed = true; b.textContent = 'Tap again to delete'; tm = setTimeout(() => { armed = false; b.textContent = label || 'Delete'; }, 3500); } else { clearTimeout(tm); onDelete(); } });
+  return b;
+}
+function downloadBlob(blob, name){
+  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+function csvText(rows){ return rows.map(r => r.map(v => '"' + String(v === undefined || v === null ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\r\n'); }
+function downloadCSV(rows, name){ downloadBlob(new Blob(['﻿' + csvText(rows)], {type: 'text/csv;charset=utf-8;'}), name); toast('CSV saved'); }
+
+
+
+/* =====================================================================
+   RETCO ORDER COLLECTION
+   UI (oc3..oc5)  ->  services (this file)  ->  data access layer (DAL)  ->  local storage now,
+   Supabase later. Logical tables: shops, products, records (order_collection_records),
+   insights (product_insights), followUps (follow_ups), settings (app_settings).
+   Every row has a stable uuid id, createdAt and updatedAt.
+   ===================================================================== */
+const KEY = 'retco_oc_v1', VERSION = 1;
+const uuid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); });
+const nowIso = () => new Date().toISOString();
+const nowTime = () => { const d = new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+const addDays = (ds, n) => { const d = new Date(ds + 'T12:00:00'); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+const validDate = ds => /^\d{4}-\d{2}-\d{2}$/.test(ds || '') && !isNaN(new Date(ds + 'T12:00:00')) && new Date(ds + 'T12:00:00').getDate() === +ds.slice(8, 10);
+const inRange = (d, a, b) => (!a || d >= a) && (!b || d <= b);
+const genStamp = () => fmtDate(today()) + ' ' + nowTime();
+const TABLES = ['shops', 'products', 'records', 'insights', 'followUps'];
+
+/* ================= data access layer ================= */
+const DAL = {
+  mode: 'local',   /* 'local' now. A 'supabase' adapter can replace load/save later; no secret keys are ever kept in this file. */
+  load(){ try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } },
+  save(db){ try { localStorage.setItem(KEY, JSON.stringify(db)); return true; } catch(e){ return false; } }
+};
+function blankDB(){
+  return {meta: {version: VERSION, createdAt: nowIso()}, settings: {companyName: 'RETCO FOODS', address: 'SF No. 20/25, Chittara Nagar, Mathur, Pudukkottai-622515', phone: '+916379742810', user: 'RETCO', role: 'Owner', theme: 'light'},
+    shops: [], products: [], records: [], insights: [], followUps: []};
+}
+let D = blankDB();
+const stampNew = r => { r.id = r.id || uuid(); r.createdAt = r.createdAt || nowIso(); r.updatedAt = nowIso(); return r; };
+function loadDB(){
+  const o = DAL.load(), b = blankDB();
+  if (o && typeof o === 'object'){ Object.keys(b).forEach(k => { if (o[k] !== undefined) b[k] = o[k]; }); b.settings = Object.assign(blankDB().settings, o.settings || {}); b.meta = Object.assign(b.meta, o.meta || {}); D = b; }
+  else { D = b; seedProducts(); save(); }
+}
+function seedProducts(){
+  [['Whole Wheat Chapati', 'Fresh Foods', 'packet'], ['Idli Dosa Batter', 'Fresh Foods', 'packet']].forEach(p => D.products.push(stampNew({code: nextCode('PRD', D.products), name: p[0], category: p[1], unit: p[2], active: true})));
+}
+function save(){ if (!DAL.save(D)) toast('Could not save: phone storage is full. Make a backup first.'); }
+
+/* ================= lookups ================= */
+const shopById = id => D.shops.find(s => s.id === id) || null;
+const productById = id => D.products.find(p => p.id === id) || null;
+const recordById = id => D.records.find(r => r.id === id) || null;
+function nextCode(prefix, list){ let m = 0; list.forEach(x => { const n = parseInt(String(x.code || '').replace(/\D/g, ''), 10); if (n > m) m = n; }); return prefix + String(m + 1).padStart(3, '0'); }
+const liveRecords = () => D.records.filter(r => r.status !== 'deleted');
+const byNewest = (a, b) => (b.date + (b.time || '')).localeCompare(a.date + (a.time || '')) || (b.createdAt || '').localeCompare(a.createdAt || '');
+const byOldest = (a, b) => byNewest(b, a);
+const insightsOf = rid => D.insights.filter(i => i.recordId === rid && i.status !== 'deleted');
+const shopName = r => { const s = shopById(r.shopUid); return s ? s.name : r.shopName; };
+const shopCode = r => { const s = shopById(r.shopUid); return s ? s.code : r.shopCode; };
+const shopArea = r => { const s = shopById(r.shopUid); return s ? s.area : r.area; };
+const RESULTS = ['Order Given', 'Stock Available', 'Order Later', 'No Requirement Today', 'Slow Movement', 'Shop Closed', 'Owner Not Available', 'Not Interested', 'Other'];
+const RES_CLASS = {'Order Given': 'ok', 'Stock Available': 'upi', 'Order Later': 'warnb', 'No Requirement Today': 'returned', 'Slow Movement': 'due', 'Shop Closed': 'returned', 'Owner Not Available': 'warnb', 'Not Interested': 'due', 'Other': 'returned'};
+/* what each result needs: items = product lines (qty = order quantity, stock = stock quantity), follow = 'req' | 'opt' | '' */
+const SPEC = {'Order Given': {items: 'qty', delivery: true, follow: 'opt'}, 'Stock Available': {items: 'stock', follow: 'opt'}, 'Order Later': {follow: 'req'}, 'No Requirement Today': {follow: 'opt'}, 'Slow Movement': {items: 'opt', follow: 'opt'}, 'Shop Closed': {follow: 'opt'}, 'Owner Not Available': {follow: 'req'}, 'Not Interested': {}, 'Other': {follow: 'opt'}};
+function itemsText(r){
+  return (r.items || []).map(i => i.productName + (num(i.qty) > 0 ? ' ' + num(i.qty) + (i.unit ? ' ' + i.unit : '') : '') + (i.stockQty !== null && i.stockQty !== undefined ? ' (stock ' + num(i.stockQty) + ')' : '')).join(', ');
+}
+const qtyText = r => (r.items || []).filter(i => num(i.qty) > 0).map(i => num(i.qty) + ' ' + (i.unit || '')).join(', ') || ((r.items || []).filter(i => i.stockQty !== null && i.stockQty !== undefined && i.stockQty !== '').map(i => 'stock ' + num(i.stockQty)).join(', '));
+
+/* ================= shops ================= */
+function validateShop(f){
+  if (!String(f.name || '').trim()) return 'Enter the shop name'; const code = String(f.code || '').trim(); if (!code) return 'Shop ID is missing';
+  if (D.shops.some(s => s.id !== f.id && norm(s.code) === norm(code))) return 'This Shop ID is already used';
+  if (D.shops.some(s => s.id !== f.id && norm(s.name) === norm(f.name) && norm(s.area) === norm(f.area))) return 'A shop with this name and area already exists';
+  return '';
+}
+function saveShop(f){
+  const err = validateShop(f); if (err) throw new Error(err);
+  const vals = {code: f.code.trim(), name: f.name.trim(), address: (f.address || '').trim(), area: (f.area || '').trim(), phone: (f.phone || '').trim(), gst: (f.gst || '').trim().toUpperCase(), notes: (f.notes || '').trim(), active: f.active !== false};
+  if (f.id){ const s = shopById(f.id); Object.assign(s, vals, {updatedAt: nowIso()}); return s; }
+  const s = stampNew(vals); D.shops.push(s); return s;
+}
+const shopUsed = s => D.records.some(r => r.shopUid === s.id) || D.followUps.some(f => f.shopUid === s.id);
+function deleteShop(s){ if (shopUsed(s)) return false; D.shops.splice(D.shops.indexOf(s), 1); return true; }
+
+/* ================= products ================= */
+function validateProduct(f){
+  if (!String(f.name || '').trim()) return 'Enter the product name'; const code = String(f.code || '').trim(); if (!code) return 'Product ID is missing';
+  if (D.products.some(p => p.id !== f.id && norm(p.code) === norm(code))) return 'This Product ID is already used';
+  if (D.products.some(p => p.id !== f.id && norm(p.name) === norm(f.name))) return 'This product already exists';
+  return '';
+}
+function saveProduct(f){
+  const err = validateProduct(f); if (err) throw new Error(err);
+  const vals = {code: f.code.trim(), name: f.name.trim(), category: (f.category || '').trim(), unit: (f.unit || 'packet').trim(), active: f.active !== false};
+  if (f.id){ const p = productById(f.id), oldName = p.name; Object.assign(p, vals, {updatedAt: nowIso()}); return p; }
+  const p = stampNew(vals); D.products.push(p); return p;
+}
+const productUsed = p => D.records.some(r => (r.items || []).some(i => i.productUid === p.id)) || D.insights.some(i => i.productUid === p.id);
+function deleteProduct(p){ if (productUsed(p)) return false; D.products.splice(D.products.indexOf(p), 1); return true; }
+const activeProducts = (keepUid) => D.products.filter(p => p.active !== false || p.id === keepUid).sort((a, b) => a.name.localeCompare(b.name));
+const activeShops = (keepUid) => D.shops.filter(s => s.active !== false || s.id === keepUid);
+
+/* ================= records, insights, follow-ups ================= */
+function itemSnap(i){ const p = productById(i.productUid); return {productUid: i.productUid, productId: p ? p.code : (i.productId || ''), productName: p ? p.name : (i.productName || ''), unit: p ? p.unit : (i.unit || ''), qty: i.qty === null || i.qty === undefined || i.qty === '' ? null : num(i.qty), stockQty: i.stockQty === null || i.stockQty === undefined || i.stockQty === '' ? null : num(i.stockQty)}; }
+function validateRecord(F){
+  const shop = shopById(F.shopUid); if (!shop) return 'Choose the shop first';
+  if (!validDate(F.date)) return 'Invalid date'; if (!/^\d{2}:\d{2}$/.test(F.time || '')) return 'Invalid time';
+  if (!F.result) return 'Choose the result of the call';
+  const sp = SPEC[F.result], items = (F.items || []).filter(i => i.productUid || num(i.qty) > 0 || (i.stockQty !== null && i.stockQty !== undefined && i.stockQty !== ''));
+  if (sp.items === 'qty'){ if (!items.length) return 'Choose the product ordered'; for (const i of items){ if (!i.productUid) return 'Choose the product'; if (!(num(i.qty) > 0)) return 'Enter the quantity ordered'; } }
+  if (sp.items === 'stock'){ if (!items.length) return 'Choose the product'; for (const i of items) if (!i.productUid) return 'Choose the product'; }
+  if (sp.items === 'opt') for (const i of items) if (!i.productUid) return 'Choose the product';
+  if (sp.follow === 'req' && !F.followUpDate) return F.result === 'Order Later' ? 'Enter the expected order / follow-up date' : 'Enter the follow-up date';
+  if (F.followUpDate && !validDate(F.followUpDate)) return 'Invalid follow-up date'; if (F.expectedDelivery && !validDate(F.expectedDelivery)) return 'Invalid delivery date';
+  if (F.followUpDate && F.followUpDate < F.date) return 'Follow-up date cannot be before the call date';
+  for (const n of F.insights || []){ const txt = String(n.note || '').trim(); if (!txt && !n.productUid) continue; if (!n.productUid) return 'Choose the product for the Product Insight'; if (!txt) return 'Write what the shop said about the product, or remove that Product Insight'; }
+  return '';
+}
+function syncFollowUp(rec){
+  const ex = D.followUps.find(f => f.recordId === rec.id);
+  if (rec.followUpDate){
+    if (ex){ if (ex.dueDate !== rec.followUpDate){ ex.dueDate = rec.followUpDate; if (ex.status !== 'open') { ex.status = 'open'; ex.doneAt = ''; ex.doneBy = ''; } } ex.reason = rec.result; ex.shopUid = rec.shopUid; ex.shopCode = rec.shopCode; ex.shopName = rec.shopName; ex.updatedAt = nowIso(); }
+    else D.followUps.push(stampNew({recordId: rec.id, shopUid: rec.shopUid, shopCode: rec.shopCode, shopName: rec.shopName, dueDate: rec.followUpDate, reason: rec.result, status: 'open', doneAt: '', doneBy: ''}));
+  } else if (ex && ex.status === 'open'){ ex.status = 'cancelled'; ex.updatedAt = nowIso(); }
+}
+function settlePrior(rec){ /* a new call to the shop closes follow-ups that were waiting for it */
+  D.followUps.forEach(f => { if (f.shopUid !== rec.shopUid || f.status !== 'open' || f.recordId === rec.id) return;
+    if (f.dueDate <= rec.date){ f.status = 'done'; f.doneAt = nowIso(); f.doneBy = rec.id; f.updatedAt = nowIso(); }
+    else if (rec.followUpDate){ f.status = 'cancelled'; f.doneBy = rec.id; f.updatedAt = nowIso(); } });
+}
+function saveRecord(F){
+  const err = validateRecord(F); if (err) throw new Error(err);
+  const shop = shopById(F.shopUid), sp = SPEC[F.result];
+  const items = sp.items ? (F.items || []).filter(i => i.productUid).map(itemSnap).map(i => { if (sp.items !== 'qty') i.qty = null; if (sp.items === 'qty') i.stockQty = null; return i; }) : [];
+  const vals = {date: F.date, time: F.time, shopUid: shop.id, shopCode: shop.code, shopName: shop.name, area: shop.area, phone: shop.phone, result: F.result, items, expectedDelivery: sp.delivery ? (F.expectedDelivery || '') : '', followUpDate: sp.follow ? (F.followUpDate || '') : '', generalNotes: F.generalNotes || ''};
+  let rec, isNew = !F.id;
+  if (!isNew){
+    rec = recordById(F.id); const ed = rec.edits = rec.edits || [];
+    ['date', 'time', 'result', 'followUpDate', 'expectedDelivery', 'generalNotes'].forEach(k => { if ((rec[k] || '') !== (vals[k] || '')) ed.push({at: nowIso(), field: k, from: rec[k] || '', to: vals[k] || ''}); });
+    if (JSON.stringify(rec.items || []) !== JSON.stringify(vals.items)) ed.push({at: nowIso(), field: 'items', from: itemsText(rec), to: itemsText(vals)});
+    Object.assign(rec, vals, {updatedAt: nowIso()});
+  } else {
+    const dup = D.records.find(r => r.status !== 'deleted' && r.shopUid === vals.shopUid && r.date === vals.date && r.time === vals.time && r.result === vals.result && (r.generalNotes || '') === vals.generalNotes && Date.now() - Date.parse(r.createdAt) < 120000);
+    if (dup) throw new Error('This call was just saved already');
+    rec = stampNew(Object.assign({status: 'active', createdBy: D.settings.user}, vals)); D.records.push(rec);
+  }
+  /* product insights are kept in their own table, apart from the general notes */
+  const keep = [];
+  (F.insights || []).forEach(n => {
+    const txt = String(n.note || ''); if (!txt.trim() || !n.productUid) return; const p = productById(n.productUid), common = {recordId: rec.id, shopUid: shop.id, shopCode: shop.code, shopName: shop.name, productUid: p.id, productId: p.code, productName: p.name, note: txt};
+    let ins = n.id ? D.insights.find(x => x.id === n.id) : null;
+    if (ins){ const ed = ins.edits = ins.edits || []; if (ins.note !== txt) ed.push({at: nowIso(), field: 'note', from: ins.note, to: txt}); if (ins.productUid !== p.id) ed.push({at: nowIso(), field: 'product', from: ins.productName, to: p.name}); Object.assign(ins, common, {status: 'active', updatedAt: nowIso()}); }
+    else { ins = stampNew(Object.assign({status: 'active', date: rec.date, time: rec.time, area: shop.area}, common)); D.insights.push(ins); }
+    keep.push(ins.id);
+  });
+  D.insights.forEach(i => { if (i.recordId === rec.id && i.status !== 'deleted' && keep.indexOf(i.id) < 0){ i.status = 'deleted'; i.updatedAt = nowIso(); } });
+  syncFollowUp(rec); if (isNew) settlePrior(rec);
+  save(); return rec;
+}
+function deleteRecord(r){ r.status = 'deleted'; r.deletedAt = nowIso(); r.updatedAt = nowIso(); D.insights.forEach(i => { if (i.recordId === r.id && i.status !== 'deleted'){ i.status = 'deleted'; i.deletedWith = 'record'; i.updatedAt = nowIso(); } }); D.followUps.forEach(f => { if (f.recordId === r.id && f.status === 'open'){ f.status = 'cancelled'; f.updatedAt = nowIso(); } }); save(); }
+function restoreRecord(r){ r.status = 'active'; r.deletedAt = ''; r.updatedAt = nowIso(); D.insights.forEach(i => { if (i.recordId === r.id && i.deletedWith === 'record'){ i.status = 'active'; i.deletedWith = ''; i.updatedAt = nowIso(); } }); syncFollowUp(r); save(); }
+const fuState = f => f.dueDate < today() ? 'overdue' : f.dueDate === today() ? 'today' : 'upcoming';
+const openFollowUps = () => D.followUps.filter(f => f.status === 'open').filter(f => { const r = recordById(f.recordId); return r && r.status !== 'deleted'; });
+function recFuStatus(r){ const f = D.followUps.find(x => x.recordId === r.id); if (!r.followUpDate) return 'none'; if (!f || f.status === 'cancelled') return 'cancelled'; if (f.status === 'done') return 'done'; return fuState(f); }
+function markFollowUpDone(f){ f.status = 'done'; f.doneAt = nowIso(); f.doneBy = 'manual'; f.updatedAt = nowIso(); save(); }
+
+/* ================= search & filters ================= */
+const BLANK_F = {q: '', period: 'all', from: '', to: '', shop: '', product: '', result: '', area: '', fu: '', hasInsight: ''};
+function recordText(r){ return norm([shopCode(r), shopName(r), shopArea(r), r.phone, r.result, r.generalNotes, (r.items || []).map(i => i.productId + ' ' + i.productName).join(' '), insightsOf(r.id).map(i => i.productId + ' ' + i.productName + ' ' + i.note).join(' ')].join(' ')); }
+function recordsFiltered(f){
+  const rg = periodRange(f.period, f.from, f.to), q = norm(f.q);
+  return liveRecords().filter(r => inRange(r.date, rg[0], rg[1]) && (!f.shop || r.shopUid === f.shop) && (!f.product || (r.items || []).some(i => i.productUid === f.product) || insightsOf(r.id).some(i => i.productUid === f.product)) && (!f.result || r.result === f.result) && (!f.area || norm(shopArea(r)) === norm(f.area)) &&
+    (!f.fu || (f.fu === 'any' ? r.followUpDate : recFuStatus(r) === f.fu)) && (!f.hasInsight || (f.hasInsight === 'yes') === (insightsOf(r.id).length > 0)) && (!q || recordText(r).indexOf(q) >= 0)).sort(byNewest);
+}
+const allAreas = () => Array.from(new Set(D.shops.map(s => s.area).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+
+/* ================= reorder behaviour (stored data -> simple facts) ================= */
+function shopStats(uid){
+  const recs = liveRecords().filter(r => r.shopUid === uid).sort(byOldest), by = {}; RESULTS.forEach(x => by[x] = 0); recs.forEach(r => by[r.result] = (by[r.result] || 0) + 1);
+  const orderDates = Array.from(new Set(recs.filter(r => r.result === 'Order Given').map(r => r.date))).sort(), gaps = []; for (let i = 1; i < orderDates.length; i++) gaps.push(daysBetween(orderDates[i - 1], orderDates[i]));
+  const avg = gaps.length ? round2(gaps.reduce((a, b) => a + b, 0) / gaps.length) : null, last = orderDates.length ? orderDates[orderDates.length - 1] : '';
+  const expVs = []; recs.forEach(r => { if (r.result === 'Order Later' && r.followUpDate){ const act = recs.find(x => x.result === 'Order Given' && (x.date > r.date || (x.date === r.date && (x.time || '') > (r.time || '')))); expVs.push({recordId: r.id, expected: r.followUpDate, actual: act ? act.date : '', delay: act ? daysBetween(r.followUpDate, act.date) : null}); } });
+  const n = recs.length, flags = [];
+  if (avg !== null) flags.push('Orders about every ' + Math.round(avg) + ' day' + (Math.round(avg) === 1 ? '' : 's')); if (n >= 3 && by['Order Later'] >= 3 && by['Order Later'] / n >= 0.3) flags.push('Often postpones orders'); if (n >= 3 && by['Stock Available'] >= 3 && by['Stock Available'] / n >= 0.3) flags.push('Often has stock remaining'); if (by['Slow Movement'] >= 2) flags.push('Slow movement mentioned ' + by['Slow Movement'] + ' times');
+  if (last && daysBetween(last, today()) > Math.max(14, avg ? avg * 3 : 14)) flags.push('No order for ' + daysBetween(last, today()) + ' days');
+  return {recs, by, orderDates, gaps, avg, last, daysSince: last ? daysBetween(last, today()) : null, expVs, flags, n};
+}
+const R = {}; let nav = {g: 'home', s: 'dash'}, stack = [];
+const ROLE_GROUPS = {Salesman: ['money', 'owing'], Staff: ['owing']};
+function allowedGroups(){ const r = D.settings.role; return ROLE_GROUPS[r] || Object.keys(GROUPS); }
+function subsOf(g){
+  const r = D.settings.role, list = GROUPS[g].subs;
+  if (r === 'Salesman') return list.filter(s => ['in', 'ar'].indexOf(s[0]) >= 0);
+  if (r === 'Staff') return list.filter(s => s[0] === 'ar');
+  if (r === 'Accounts') return list.filter(s => ['settings', 'demo'].indexOf(s[0]) < 0);
+  return list;
+}
+function go(g, s){ if (allowedGroups().indexOf(g) < 0) g = allowedGroups()[0]; const subs = subsOf(g); nav.g = g; nav.s = (s && subs.some(x => x[0] === s)) ? s : subs[0][0]; stack = []; render(true); }
+function push(title, fn){ stack.push({title, fn}); render(true); }
+function back(){ stack.pop(); render(true); }
+function rerender(){ render(false); }
+function render(top){
+  const y = window.scrollY, v = $('views'); v.innerHTML = '';
+  const st = $('subtabs'); st.innerHTML = ''; subsOf(nav.g).forEach(s => { const b = T('button', null, s[1]); b.id = 'sub-' + s[0]; b.setAttribute('aria-selected', String(nav.s === s[0] && !stack.length)); b.addEventListener('click', () => go(nav.g, s[0])); st.appendChild(b); });
+  st.hidden = subsOf(nav.g).length < 2;
+  const bn = $('bottomnav'); bn.innerHTML = ''; bn.style.gridTemplateColumns = 'repeat(' + allowedGroups().length + ',1fr)'; allowedGroups().forEach(g => { const b = T('button'); b.id = 'nav-' + g; b.setAttribute('aria-selected', String(nav.g === g)); add(b, T('i', null, GROUPS[g].icon), T('span', null, GROUPS[g].label)); b.addEventListener('click', () => go(g)); bn.appendChild(b); });
+  const wrap = T('div', 'wrap'); v.appendChild(wrap);
+  if (stack.length){ const t = stack[stack.length - 1], bar = T('div', 'crumb'), b = T('button', 'btn-secondary', '< Back'); b.id = 'btnBack'; b.addEventListener('click', back); add(bar, b, T('h3', null, t.title)); wrap.appendChild(bar); t.fn(wrap); }
+  else if (R[nav.s]) R[nav.s](wrap);
+  { const db = $('demoBanner'); if (db) db.hidden = true; }
+  window.scrollTo(0, top ? 0 : y);
+}
+
+function listRow(o){
+  const c = T('div', 'sale-row' + (o.onclick ? ' click' : '') + (o.dim ? ' dim' : '')); if (o.id) c.id = o.id; if (o.attr) Object.keys(o.attr).forEach(k => c.setAttribute(k, o.attr[k]));
+  const tp = T('div', 'sale-row-top'), mn = T('div', 'sale-row-main'); add(mn, T('div', 'shop', o.title)); if (o.sub) mn.appendChild(T('div', 'prod', o.sub));
+  const sd = T('div', 'sale-row-amt'); if (o.amt !== undefined) sd.appendChild(T('div', 'amt num' + (o.cls ? ' ' + o.cls : ''), o.amt)); if (o.badge) sd.appendChild(T('span', 'badge ' + o.badge[1], o.badge[0]));
+  add(tp, mn, sd); c.appendChild(tp); if (o.onclick) c.addEventListener('click', o.onclick); return c;
+}
+const empty = txt => T('div', 'empty-state', txt);
+const sectionLabel = t => T('div', 'section-label', t);
+function kt(label, value, sub, cls, onclick, id){ const t = T('div', 'tile' + (onclick ? ' click' : '')); if (id) t.id = id; add(t, T('div', 'lbl', label), T('div', 'val num' + (cls ? ' ' + cls : ''), value)); if (sub) t.appendChild(T('div', 'sub', sub)); if (onclick) t.addEventListener('click', onclick); return t; }
+const grid = (...tiles) => { const g = T('div', 'snapshot'); g.style.padding = '0'; g.style.maxWidth = 'none'; tiles.forEach(t => g.appendChild(t)); return g; };
+const signCls = n => n < 0 ? 'neg' : '';
+const mSigned = n => (num(n) < 0 ? '-' : '') + MONEY(Math.abs(num(n)));
+
+/* ----- periods ----- */
+const PERIODS = [['today', 'Today'], ['yesterday', 'Yesterday'], ['week', 'This week'], ['month', 'This month'], ['lastmonth', 'Last month'], ['fy', 'This year'], ['all', 'All'], ['custom', 'Custom']];
+function periodRange(key, from, to){
+  const t = today(), d = new Date(t + 'T12:00:00'), mk = t.slice(0, 7);
+  if (key === 'today') return [t, t];
+  if (key === 'yesterday'){ const y = addDays(t, -1); return [y, y]; }
+  if (key === 'week'){ const dow = (d.getDay() + 6) % 7, s = addDays(t, -dow); return [s, addDays(s, 6)]; }
+  if (key === 'month') return [mk + '-01', monthEnd(mk)];
+  if (key === 'lastmonth'){ const p = addMonths(mk, -1); return [p + '-01', monthEnd(p)]; }
+  if (key === 'fy'){ const y = +t.slice(0, 4), m = +t.slice(5, 7), sy = m >= 4 ? y : y - 1; return [sy + '-04-01', (sy + 1) + '-03-31']; }
+  if (key === 'custom') return [from || '', to || ''];
+  return ['', ''];
+}
+const rangeText = r => (!r[0] && !r[1]) ? 'All dates' : (r[0] === r[1] ? fmtDate(r[0]) : (r[0] ? fmtDate(r[0]) : 'start') + ' to ' + (r[1] ? fmtDate(r[1]) : 'today'));
+function rangeBar(st, onChange, id){
+  const box = T('div', 'form-stack'); if (id) box.id = id;
+  box.appendChild(chips(PERIODS.map(p => ({v: p[0], l: p[1]})), st.period, v => { st.period = v; onChange(); }, (id || 'rg') + 'Chips'));
+  if (st.period === 'custom'){ const g = T('div', 'grid2'); add(g, labeled('From', Object.assign(textInput('date', st.from, v => { st.from = v; }, {onchange: onChange}), {id: (id || 'rg') + 'From'})), labeled('To', Object.assign(textInput('date', st.to, v => { st.to = v; }, {onchange: onChange}), {id: (id || 'rg') + 'To'}))); box.appendChild(g); }
+  return box;
+}
+const stRange = st => periodRange(st.period, st.from, st.to);
+
+
+function chipset(opts, value, onchange, id){
+  const d = T('div', 'chipset'); if (id) d.id = id;
+  opts.forEach(o => { if (Array.isArray(o)) o = {v: o[0], l: o[1]}; const v = typeof o === 'string' ? o : o.v, l = typeof o === 'string' ? o : o.l; const b = T('button', null, l); b.type = 'button'; b.setAttribute('data-v', v); b.setAttribute('aria-selected', String(v === value)); b.addEventListener('click', () => onchange(v)); d.appendChild(b); });
+  return d;
+}
+
+function showErr(box, msg){ box.hidden = !msg; box.textContent = msg || ''; }
+
+function reportCsvRows(m){ const rows = [[m.title], [m.subtitle]]; m.summary.forEach(p => rows.push(p)); rows.push([]); m.sections.forEach(s => { rows.push([s.heading]); rows.push(s.cols.map(c => c.h)); s.rows.forEach(r => rows.push(r)); if (s.foot) rows.push(s.foot); rows.push([]); }); return rows; }
+function reportHtml(m){
+  const s = D.settings;
+  let h = '<div style="font-family:Arial,sans-serif;color:#111;font-size:12px;max-width:760px;margin:0 auto;padding:16px"><div style="display:flex;justify-content:space-between;gap:10px;border-bottom:2px solid #222;padding-bottom:8px;margin-bottom:10px"><div style="font-size:11.5px;line-height:1.5"><div style="font-size:18px;font-weight:700">' + esc(s.companyName) + '</div>' + esc(s.address) + (s.phone ? '<br>Phone: ' + esc(s.phone) : '') + '</div><div style="text-align:right"><div style="font-size:16px;font-weight:700">' + esc(m.title) + '</div><div style="font-size:11.5px">' + esc(m.subtitle || '') + '</div></div></div>';
+  if (m.summary.length) h += '<div style="display:flex;flex-wrap:wrap;gap:6px 22px;background:#f5f0e4;border:1px solid #ddd;padding:8px 10px;margin-bottom:12px;font-size:12px">' + m.summary.map(p => '<div>' + esc(p[0]) + ': <b>' + esc(p[1]) + '</b></div>').join('') + '</div>';
+  m.sections.forEach(sec => { const cw = sec.cols.reduce((a, c) => a + c.w, 0);
+    h += '<div style="font-weight:700;font-size:13px;margin:12px 0 4px">' + esc(sec.heading) + '</div><table style="width:100%;border-collapse:collapse;font-size:11.5px"><thead><tr style="background:#ece3d0">' + sec.cols.map(c => '<th style="text-align:' + (c.a === 'r' ? 'right' : 'left') + ';padding:5px;width:' + Math.round(c.w / cw * 100) + '%">' + esc(c.h) + '</th>').join('') + '</tr></thead><tbody>' +
+      sec.rows.map(r => '<tr>' + r.map((v, i) => '<td style="padding:4px 5px;border-bottom:1px solid #ddd;vertical-align:top;text-align:' + (sec.cols[i].a === 'r' ? 'right' : 'left') + '">' + esc(v) + '</td>').join('') + '</tr>').join('') + (sec.foot ? '<tr style="background:#f5f0e4;font-weight:700">' + sec.foot.map((v, i) => '<td style="padding:5px;text-align:' + (sec.cols[i].a === 'r' ? 'right' : 'left') + '">' + esc(v) + '</td>').join('') + '</tr>' : '') + '</tbody></table>' + (sec.note ? '<div style="font-size:10.5px;color:#666;margin-top:3px">' + esc(sec.note) + '</div>' : ''); });
+  return h + '<div style="margin-top:14px;font-size:10px;color:#777">Generated ' + esc(genStamp()) + ' by ' + esc(D.settings.user) + '</div></div>';
+}
+function showHtmlView(html){
+  const old = $('invoiceView'); if (old) old.remove();
+  const ov = T('div'); ov.id = 'invoiceView'; ov.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;z-index:300;background:#fff;overflow:auto;color:#111';
+  const bar = T('div', 'no-print'); bar.style.cssText = 'position:sticky;top:0;display:flex;gap:8px;padding:10px 12px;background:#f3f3f3;border-bottom:1px solid #ccc';
+  const pr = T('button', 'btn-secondary', 'Print / Save as PDF'); pr.id = 'btnPrintNow'; pr.addEventListener('click', () => { try { window.print(); } catch(e){ toast('Print not available here. Use Download PDF instead.'); } });
+  const cl = T('button', 'btn-secondary', 'Close'); cl.id = 'btnCloseView'; cl.addEventListener('click', () => ov.remove()); add(bar, pr, cl); const body = T('div'); body.innerHTML = html; add(ov, bar, body); document.body.appendChild(ov);
+}
+function loadScript(src, cb){ const s = document.createElement('script'); s.src = src; s.onload = () => cb(true); s.onerror = () => cb(false); document.head.appendChild(s); }
+function ensureJsPDF(cb){
+  if (window.jspdf && window.jspdf.jsPDF) return cb(true);
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', ok => { if (ok && window.jspdf && window.jspdf.jsPDF) return cb(true); loadScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js', ok2 => cb(!!(ok2 && window.jspdf && window.jspdf.jsPDF))); });
+}
+function showPdfModal(blob, filename, viewFn){
+  const old = $('pdfModal'); if (old) old.remove(); const url = URL.createObjectURL(blob); let file = null; try { file = new File([blob], filename, {type: 'application/pdf'}); } catch(e){}
+  const back = T('div', 'modal-back'); back.id = 'pdfModal'; const box = T('div', 'modal-box'); add(box, T('h3', null, 'PDF ready'), T('div', 'note', filename)); const acts = T('div', 'modal-actions');
+  const canShare = !!(file && navigator.share && navigator.canShare && navigator.canShare({files: [file]}));
+  if (canShare){ const sh = T('button', 'btn-primary', 'Share / Save to phone'); sh.id = 'btnSharePdf'; sh.addEventListener('click', () => navigator.share({files: [file], title: filename}).catch(err => { if (err && err.name !== 'AbortError') toast('Share not available. Try Download or Open.'); })); acts.appendChild(sh); }
+  const dl = T('button', canShare ? 'btn-secondary' : 'btn-primary', 'Download'); dl.id = 'btnDownloadPdf'; dl.addEventListener('click', () => { const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); toast('If nothing downloads, use Open or Share'); });
+  const op = T('button', 'btn-secondary', 'Open PDF'); op.addEventListener('click', () => { try { window.open(url, '_blank'); } catch(e){ location.href = url; } }); const vw = T('button', 'btn-secondary', 'View on screen'); vw.addEventListener('click', () => viewFn && viewFn());
+  const cl = T('button', 'btn-secondary', 'Close'); cl.id = 'btnClosePdf'; cl.addEventListener('click', () => { back.remove(); setTimeout(() => URL.revokeObjectURL(url), 60000); }); add(acts, dl, op, vw, cl); Array.prototype.forEach.call(acts.children, c => c.style.width = '100%'); add(box, acts); back.appendChild(box); document.body.appendChild(back);
+}
+function openReport(m, mode){
+  if (!m){ toast('Nothing to show for this selection'); return; } const nm = String(m.fileName || 'Report').replace(/[^A-Za-z0-9_\-]+/g, '_');
+  if (mode === 'view'){ showHtmlView(reportHtml(m)); return; } if (mode === 'csv'){ downloadCSV(reportCsvRows(m), nm + '.csv'); return; }
+  toast('Preparing PDF...'); ensureJsPDF(ok => { if (!ok){ toast('PDF library could not load (needs internet once). Use Print / View instead.'); return; } try { const doc = reportPdf(m); showPdfModal(doc.output('blob'), nm + '.pdf', () => showHtmlView(reportHtml(m))); } catch(err){ toast('PDF error: ' + (err && err.message || 'unknown')); } });
+}
+function showReportPicker(m){
+  if (!m){ toast('Nothing to show for this selection'); return; } const old = $('rptModal'); if (old) old.remove();
+  const back = T('div', 'modal-back'); back.id = 'rptModal'; const box = T('div', 'modal-box'); add(box, T('h3', null, m.title), T('div', 'note', m.subtitle)); const acts = T('div', 'modal-actions');
+  [['View / Print', 'view', 'btnRptView', 'btn-primary'], ['PDF', 'pdf', 'btnRptPdf', 'btn-secondary'], ['CSV', 'csv', 'btnRptCsv', 'btn-secondary']].forEach(x => { const b = T('button', x[3], x[0]); b.id = x[2]; b.addEventListener('click', () => { if (x[1] !== 'view' || true) back.remove(); openReport(m, x[1]); }); acts.appendChild(b); });
+  const cl = T('button', 'btn-secondary', 'Close'); cl.id = 'btnRptClose'; cl.addEventListener('click', () => back.remove()); acts.appendChild(cl); Array.prototype.forEach.call(acts.children, c => c.style.width = '100%'); add(box, acts); back.appendChild(box); document.body.appendChild(back);
+}
+
+/* ================= navigation groups ================= */
+const GROUPS = {
+  home: {label: 'Home', icon: '⌂', subs: [['dash', 'Dashboard']]},
+  collect: {label: 'Collect', icon: '+', subs: [['new', 'New collection']]},
+  follow: {label: 'Follow-up', icon: '☎', subs: [['fu', 'Follow-ups']]},
+  hist: {label: 'History', icon: '☰', subs: [['hist', 'All records']]},
+  more: {label: 'More', icon: '⋯', subs: [['shops', 'Shops'], ['products', 'Products'], ['reports', 'Reports'], ['backup', 'Backup'], ['settings', 'Settings']]}
+};
+function openShopProfile(uid){ nav = {g: 'more', s: 'shops'}; stack = []; shopOpen = uid; render(true); }
+function startCollect(shopUid){ collectF = newCollect(); if (shopUid) collectF.shopUid = shopUid; go('collect', 'new'); }
+function openRecord(id){ push('Collection record', w => recordDetail(w, id)); }
+const dayName = ds => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][new Date(ds + 'T12:00:00').getDay()];
+const fmtDay = ds => ds ? fmtDate(ds) : '';
+function lastContactLine(uid){
+  const r = liveRecords().filter(x => x.shopUid === uid).sort(byNewest)[0]; if (!r) return 'First time contacting this shop.';
+  return 'Last: ' + fmtDate(r.date) + ' (' + dayName(r.date) + ') · ' + r.result + (itemsText(r) ? ' · ' + itemsText(r) : '') + (r.generalNotes ? ' · "' + r.generalNotes.slice(0, 60) + (r.generalNotes.length > 60 ? '...' : '') + '"' : '');
+}
+
+/* ================= collect form ================= */
+let collectF = null;
+function newCollect(){ return {id: '', date: today(), time: nowTime(), shopUid: '', shopQuery: '', result: '', items: [blankItem()], expectedDelivery: '', followUpDate: '', generalNotes: '', insights: [], showInsight: false, includeInactive: false}; }
+const blankItem = () => ({productUid: '', qty: null, stockQty: null});
+function collectFromRecord(r){
+  return {id: r.id, date: r.date, time: r.time, shopUid: r.shopUid, shopQuery: '', result: r.result, items: (r.items || []).length ? r.items.map(i => ({productUid: i.productUid, qty: i.qty, stockQty: i.stockQty})) : [blankItem()], expectedDelivery: r.expectedDelivery || '', followUpDate: r.followUpDate || '', generalNotes: r.generalNotes || '',
+    insights: insightsOf(r.id).map(i => ({id: i.id, productUid: i.productUid, note: i.note})), showInsight: insightsOf(r.id).length > 0, includeInactive: true};
+}
+function productSelect(value, onchange, F, id){
+  const list = activeProducts(F.includeInactive ? '' : value).filter(p => F.includeInactive || p.active !== false || p.id === value);
+  const el = selectInput([{v: '', l: '- choose product -'}].concat(list.map(p => ({v: p.id, l: p.code + ' · ' + p.name + (p.active === false ? ' (inactive)' : '')}))), value || '', onchange); if (id) el.id = id; return el;
+}
+const FOLLOW_QUICK = [['Tomorrow', 1], ['In 2 days', 2], ['In 3 days', 3], ['Next week', 7]];
+R.new = function(w){
+  if (!collectF) collectF = newCollect(); const F = collectF, editing = !!F.id;
+  const c = T('div', 'card form-stack'); c.id = 'collectForm'; c.appendChild(T('div', 'section-label', editing ? 'Edit collection record' : 'New order collection'));
+  /* shop */
+  const shopHost = T('div', 'form-stack'); shopHost.id = 'shopHost';
+  function drawShop(){
+    shopHost.innerHTML = ''; const s = shopById(F.shopUid);
+    if (s){
+      const card = T('div', 'shopcard'); card.id = 'shopCard'; add(card, T('div', null, s.code + ' · ' + s.name), T('div', 'mini', [s.area, s.phone].filter(Boolean).join(' · ')), T('div', 'mini', s.address || 'No address saved'), s.gst ? T('div', 'mini', 'GST ' + s.gst) : null, T('div', 'mini', s.active === false ? 'This shop is inactive' : ''), T('div', 'mini', lastContactLine(s.id)));
+      const op = openFollowUps().filter(f => f.shopUid === s.id).sort((a, b) => a.dueDate < b.dueDate ? -1 : 1)[0]; if (op) card.appendChild(T('div', 'mini t-warn', 'Follow-up ' + (fuState(op) === 'overdue' ? 'overdue since ' : 'due ') + fmtDate(op.dueDate) + ' (' + op.reason + ')'));
+      shopHost.appendChild(card); if (!editing){ const ch = T('button', 'btn-secondary', 'Change shop'); ch.id = 'btnChangeShop'; ch.addEventListener('click', () => { F.shopUid = ''; F.shopQuery = ''; rerender(); }); shopHost.appendChild(ch); }
+      return;
+    }
+    const inp = textInput('search', F.shopQuery, v => { F.shopQuery = v; drawSug(); }, {id: 'fShop', ph: 'Type Shop ID, name or area'}); shopHost.appendChild(labeled('Shop', inp));
+    const sug = T('div', 'sug'); sug.id = 'shopSug'; shopHost.appendChild(sug);
+    const ck = T('label', 'checkrow'), cb = T('input'); cb.type = 'checkbox'; cb.id = 'fInactive'; cb.checked = F.includeInactive; cb.addEventListener('change', () => { F.includeInactive = cb.checked; drawSug(); }); add(ck, cb, T('span', 'mini', 'Include inactive shops and products')); shopHost.appendChild(ck);
+    const nb = T('button', 'btn-secondary', '+ Add a new shop'); nb.id = 'btnQuickShop'; nb.addEventListener('click', () => { shopForm = {id: '', code: nextCode('SHP', D.shops), name: F.shopQuery.trim(), address: '', area: '', phone: '', gst: '', notes: '', active: true, fromCollect: true}; nav = {g: 'more', s: 'shops'}; stack = []; shopOpen = null; render(true); }); shopHost.appendChild(nb);
+    function drawSug(){ sug.innerHTML = ''; const q = norm(F.shopQuery); let list = D.shops.filter(x => (F.includeInactive || x.active !== false) && (!q || norm(x.code + ' ' + x.name + ' ' + x.area + ' ' + x.phone).indexOf(q) >= 0)).sort((a, b) => a.name.localeCompare(b.name));
+      if (!D.shops.length){ sug.appendChild(T('div', 'note', 'No shops yet. Tap "+ Add a new shop".')); return; } if (!list.length){ sug.appendChild(T('div', 'note', 'No shop matches. Try another word or add the shop.')); return; }
+      list.slice(0, 8).forEach(x => { const b = T('button'); b.setAttribute('data-shop', x.id); b.id = 'sug-' + x.code; add(b, T('b', null, x.code + ' · ' + x.name), T('span', null, x.area ? '  ' + x.area : '')); b.addEventListener('click', () => { F.shopUid = x.id; rerender(); }); sug.appendChild(b); }); if (list.length > 8) sug.appendChild(T('div', 'note', (list.length - 8) + ' more. Type more letters to narrow.')); }
+    drawSug();
+  }
+  drawShop(); c.appendChild(shopHost);
+  const g = T('div', 'grid2'); add(g, labeled('Date', Object.assign(textInput('date', F.date, v => { F.date = v; }), {id: 'fDate'})), labeled('Time', Object.assign(textInput('time', F.time, v => { F.time = v; }), {id: 'fTime'}))); c.appendChild(g);
+  /* result */
+  c.appendChild(T('div', 'section-label', 'What happened?'));
+  const rc = T('div', 'bigchips'); rc.appendChild(chipset(RESULTS.map(x => [x, x]), F.result, v => { F.result = v; if (!SPEC[v].items) F.items = [blankItem()]; rerender(); }, 'resChips')); c.appendChild(rc);
+  const sp = F.result ? SPEC[F.result] : null;
+  if (sp && sp.items){
+    c.appendChild(T('div', 'section-label', sp.items === 'qty' ? 'Order' : sp.items === 'stock' ? 'Stock with the shop' : 'Product (if any)'));
+    F.items.forEach((it, idx) => {
+      const box = T('div', 'insbox'); box.setAttribute('data-item', String(idx)); const p = productById(it.productUid);
+      box.appendChild(labeled('Product', productSelect(it.productUid, v => { it.productUid = v; rerender(); }, F, 'fProduct' + idx)));
+      if (sp.items === 'qty') box.appendChild(labeled('Quantity' + (p ? ' (' + p.unit + ')' : ''), Object.assign(numInput(it.qty, v => it.qty = v, 'e.g. 10'), {id: 'fQty' + idx})));
+      if (sp.items === 'stock') box.appendChild(labeled('Current stock quantity (if known)' + (p ? ' (' + p.unit + ')' : ''), Object.assign(numInput(it.stockQty, v => it.stockQty = v, 'e.g. 4'), {id: 'fStock' + idx})));
+      if (F.items.length > 1){ const rm = T('button', 'btn-secondary', 'Remove this product'); rm.addEventListener('click', () => { F.items.splice(idx, 1); rerender(); }); box.appendChild(rm); }
+      c.appendChild(box);
+    });
+    if (sp.items !== 'opt' || F.items.length < 1){ const ad = T('button', 'btn-secondary', '+ Add another product'); ad.id = 'btnAddItem'; ad.addEventListener('click', () => { F.items.push(blankItem()); rerender(); }); c.appendChild(ad); }
+  }
+  if (sp && sp.delivery) c.appendChild(labeled('Expected delivery date', Object.assign(textInput('date', F.expectedDelivery, v => F.expectedDelivery = v), {id: 'fDelivery'})));
+  if (sp && sp.follow){
+    const fh = T('div', 'form-stack'); fh.appendChild(labeled(F.result === 'Order Later' ? 'Expected order / follow-up date' + (sp.follow === 'req' ? '' : ' (optional)') : 'Follow-up date' + (sp.follow === 'req' ? '' : ' (optional)'), Object.assign(textInput('date', F.followUpDate, v => F.followUpDate = v, {onchange: () => {}}), {id: 'fFollow'})));
+    const qk = T('div', 'chipset'); FOLLOW_QUICK.forEach(q => { const b = T('button', null, q[0]); b.type = 'button'; b.addEventListener('click', () => { F.followUpDate = addDays(validDate(F.date) ? F.date : today(), q[1]); rerender(); }); qk.appendChild(b); }); const none = T('button', null, 'No follow-up'); none.type = 'button'; none.addEventListener('click', () => { F.followUpDate = ''; rerender(); }); qk.appendChild(none); fh.appendChild(qk); c.appendChild(fh);
+  }
+  /* general notes */
+  const gn = T('textarea', 'notes'); gn.id = 'fNotes'; gn.value = F.generalNotes; gn.placeholder = 'What did the shop say? Type it as they said it'; gn.addEventListener('input', () => F.generalNotes = gn.value);
+  c.appendChild(labeled('General notes', gn));
+  /* product insight (hidden until asked for) */
+  const ih = T('div', 'form-stack'); ih.id = 'insightHost';
+  if (!F.showInsight){ const b = T('button', 'btn-secondary', '+ Add Product Insight'); b.id = 'btnAddInsight'; b.addEventListener('click', () => { F.showInsight = true; if (!F.insights.length) F.insights.push({id: '', productUid: (F.items.find(i => i.productUid) || {}).productUid || '', note: ''}); rerender(); }); ih.appendChild(b); }
+  else {
+    ih.appendChild(T('div', 'section-label', 'Product Insight (about one product)'));
+    F.insights.forEach((n, idx) => { const box = T('div', 'insbox'); box.setAttribute('data-insight', String(idx));
+      box.appendChild(labeled('Product', productSelect(n.productUid, v => n.productUid = v, F, 'insProduct' + idx)));
+      const ta = T('textarea', 'notes'); ta.id = 'insNote' + idx; ta.value = n.note; ta.placeholder = 'What did the shop say about this product?'; ta.addEventListener('input', () => n.note = ta.value); box.appendChild(labeled('What the shop said', ta));
+      const rm = T('button', 'btn-secondary', 'Remove this insight'); rm.id = 'insRemove' + idx; rm.addEventListener('click', () => { F.insights.splice(idx, 1); if (!F.insights.length) F.showInsight = false; rerender(); }); box.appendChild(rm); ih.appendChild(box); });
+    const ad = T('button', 'btn-secondary', '+ Add Another Product Insight'); ad.id = 'btnAddInsight2'; ad.addEventListener('click', () => { F.insights.push({id: '', productUid: '', note: ''}); rerender(); }); ih.appendChild(ad);
+  }
+  c.appendChild(ih);
+  const err = T('div', 'msg err'); err.id = 'fErr'; err.hidden = true; c.appendChild(err);
+  const row = T('div', 'row-actions'), sv = T('button', 'btn-primary', editing ? 'Save changes' : 'Save'); sv.id = 'btnSave';
+  sv.addEventListener('click', () => { try { const rec = saveRecord(F); showErr(err, ''); toast(editing ? 'Changes saved' : 'Saved: ' + rec.shopName + ' - ' + rec.result); const keepDate = F.date; collectF = newCollect(); collectF.date = keepDate; if (editing){ stack = []; nav = {g: 'hist', s: 'hist'}; } rerender(); window.scrollTo(0, 0); } catch(e){ showErr(err, e.message); err.scrollIntoView({block: 'center'}); } });
+  row.appendChild(sv); if (editing || F.shopUid || F.result){ const cn = T('button', 'btn-secondary', editing ? 'Cancel' : 'Clear'); cn.id = 'btnClear'; cn.addEventListener('click', () => { collectF = newCollect(); if (editing){ stack = []; nav = {g: 'hist', s: 'hist'}; } rerender(); }); row.appendChild(cn); }
+  c.appendChild(row); w.appendChild(c);
+  if (!D.shops.length) w.insertBefore(T('div', 'msg', 'Start by adding your shops: More > Shops, or use "+ Add a new shop" above.'), c);
+};
+
+/* ================= record detail ================= */
+function recordDetail(w, id){
+  const r = recordById(id); if (!r){ w.appendChild(empty('Record not found.')); return; }
+  const c = T('div', 'card form-stack'); c.id = 'recordDetail';
+  add(c, T('h3', null, shopCode(r) + ' · ' + shopName(r)), T('div', 'mini', fmtDate(r.date) + ' (' + dayName(r.date) + ') ' + r.time + (shopArea(r) ? ' · ' + shopArea(r) : '') + (r.phone ? ' · ' + r.phone : '')), T('span', 'badge ' + RES_CLASS[r.result], r.result));
+  if ((r.items || []).length) c.appendChild(kv(r.result === 'Order Given' ? 'Ordered' : r.result === 'Stock Available' ? 'Stock' : 'Product', itemsText(r)));
+  if (r.expectedDelivery) c.appendChild(kv('Expected delivery', fmtDate(r.expectedDelivery)));
+  if (r.followUpDate){ const f = D.followUps.find(x => x.recordId === r.id); c.appendChild(kv('Follow-up date', fmtDate(r.followUpDate) + (f ? ' (' + (f.status === 'open' ? fuState(f) : f.status) + ')' : ''))); }
+  c.appendChild(T('div', 'section-label', 'General notes')); c.appendChild(r.generalNotes ? Object.assign(T('div', 'gen', r.generalNotes), {id: 'detailNotes'}) : T('div', 'mini', 'No general notes.'));
+  const ins = insightsOf(r.id); c.appendChild(T('div', 'section-label', 'Product insights (' + ins.length + ')'));
+  if (!ins.length) c.appendChild(T('div', 'mini', 'None.')); ins.forEach(i => { const b = T('div', 'form-stack'); add(b, T('div', 'mini', i.productId + ' · ' + i.productName), Object.assign(T('div', 'ins', i.note), {className: 'ins detailIns'})); c.appendChild(b); });
+  c.appendChild(kv('Saved', String(r.createdAt || '').replace('T', ' ').slice(0, 16) + (r.updatedAt && r.updatedAt !== r.createdAt ? ' · edited ' + String(r.updatedAt).replace('T', ' ').slice(0, 16) : '')));
+  if ((r.edits || []).length){ const d = T('details'); d.appendChild(T('summary', 'mini', 'Earlier versions (' + r.edits.length + ' changes)')); r.edits.slice().reverse().forEach(e => d.appendChild(T('div', 'mini', String(e.at).slice(0, 16).replace('T', ' ') + ' · ' + e.field + ': "' + e.from + '" to "' + e.to + '"'))); c.appendChild(d); }
+  w.appendChild(c);
+  const acts = T('div', 'row-actions'), ed = T('button', 'btn-secondary', 'Edit'); ed.id = 'btnEditRec'; ed.addEventListener('click', () => { collectF = collectFromRecord(r); stack = []; nav = {g: 'collect', s: 'new'}; render(true); });
+  const sh = T('button', 'btn-neutral', 'Open shop'); sh.id = 'btnOpenShop'; sh.addEventListener('click', () => openShopProfile(r.shopUid)); const nw = T('button', 'btn-neutral', 'New call to this shop'); nw.id = 'btnCallAgain'; nw.addEventListener('click', () => startCollect(r.shopUid));
+  const dl = armedDelete('Delete', () => { deleteRecord(r); toast('Record deleted (can be restored in Settings)'); back(); }); dl.id = 'btnDelRec'; add(acts, ed, sh, nw, dl); w.appendChild(acts);
+}
+
+/* ================= history ================= */
+const hF = Object.assign({}, BLANK_F); let hT = null;
+function recordRow(r, opts){
+  opts = opts || {}; const ins = insightsOf(r.id).length;
+  const sub = [fmtDate(r.date) + ' ' + dayName(r.date), itemsText(r), r.followUpDate ? 'follow-up ' + fmtDate(r.followUpDate) : ''].filter(Boolean).join(' · ');
+  const row = listRow({title: (opts.noShop ? '' : shopCode(r) + ' · ' + shopName(r) + ' · ') + r.result, sub, amt: qtyText(r) || '', badge: ins ? ['Insight ' + ins, 'warnb'] : null, onclick: () => openRecord(r.id), attr: {'data-rec': r.id}});
+  if (r.generalNotes) row.appendChild(T('div', 'said clip', r.generalNotes)); return row;
+}
+function filterControls(F, onChange, idp, opts){
+  opts = opts || {}; const box = T('div', 'form-stack'); box.id = idp + 'Box';
+  box.appendChild(rangeBar(F, onChange, idp + 'Range'));
+  const g1 = T('div', 'grid2'); add(g1, labeled('Shop', Object.assign(selectInput([{v: '', l: 'All shops'}].concat(D.shops.slice().sort((a, b) => a.name.localeCompare(b.name)).map(s => ({v: s.id, l: s.code + ' · ' + s.name}))), F.shop, v => { F.shop = v; onChange(); }), {id: idp + 'Shop'})), labeled('Product', Object.assign(selectInput([{v: '', l: 'All products'}].concat(D.products.slice().sort((a, b) => a.name.localeCompare(b.name)).map(p => ({v: p.id, l: p.code + ' · ' + p.name}))), F.product, v => { F.product = v; onChange(); }), {id: idp + 'Product'}))); box.appendChild(g1);
+  const g2 = T('div', 'grid2'); add(g2, labeled('Result', Object.assign(selectInput([{v: '', l: 'All results'}].concat(RESULTS.map(x => ({v: x, l: x}))), F.result, v => { F.result = v; onChange(); }), {id: idp + 'Result'})), labeled('Area', Object.assign(selectInput([{v: '', l: 'All areas'}].concat(allAreas().map(a => ({v: a, l: a}))), F.area, v => { F.area = v; onChange(); }), {id: idp + 'Area'}))); box.appendChild(g2);
+  const g3 = T('div', 'grid2'); add(g3, labeled('Follow-up', Object.assign(selectInput([{v: '', l: 'Any'}, {v: 'any', l: 'Has a follow-up date'}, {v: 'overdue', l: 'Overdue'}, {v: 'today', l: 'Due today'}, {v: 'upcoming', l: 'Upcoming'}, {v: 'done', l: 'Done'}, {v: 'none', l: 'No follow-up'}], F.fu, v => { F.fu = v; onChange(); }), {id: idp + 'Fu'})), labeled('Product insight', Object.assign(selectInput([{v: '', l: 'Any'}, {v: 'yes', l: 'Has insight'}, {v: 'no', l: 'No insight'}], F.hasInsight, v => { F.hasInsight = v; onChange(); }), {id: idp + 'Ins'}))); box.appendChild(g3);
+  return box;
+}
+R.hist = function(w){
+  const c = T('div', 'card form-stack'); c.id = 'histFilter';
+  c.appendChild(textInput('search', hF.q, v => { hF.q = v; clearTimeout(hT); hT = setTimeout(draw, 180); }, {id: 'hSearch', ph: 'Search shop, Shop ID, product, notes'}));
+  const d = T('details'); d.id = 'histMore'; d.appendChild(T('summary', null, 'Filters')); d.open = !!(hF.shop || hF.product || hF.result || hF.area || hF.fu || hF.hasInsight || hF.period !== 'all'); const fb = filterControls(hF, draw, 'h'); fb.style.marginTop = '8px'; d.appendChild(fb);
+  const cl = T('button', 'btn-secondary', 'Clear filters'); cl.id = 'btnClearHist'; cl.addEventListener('click', () => { Object.assign(hF, BLANK_F); rerender(); }); d.appendChild(cl); c.appendChild(d); w.appendChild(c);
+  const info = T('div', 'mini'); info.id = 'histCount'; w.appendChild(info); const box = T('div', 'day-group'); box.id = 'histList'; w.appendChild(box);
+  const rp = T('button', 'btn-secondary', 'Make a report from these'); rp.id = 'btnHistReport'; rp.addEventListener('click', () => { Object.assign(rpF, BLANK_F, {kind: 'collections', q: hF.q, period: hF.period, from: hF.from, to: hF.to, shop: hF.shop, product: hF.product, result: hF.result, area: hF.area, fu: hF.fu, hasInsight: hF.hasInsight}); go('more', 'reports'); }); w.appendChild(rp);
+  function draw(){ const list = recordsFiltered(hF); info.textContent = list.length + ' of ' + liveRecords().length + ' records'; box.innerHTML = ''; if (!list.length) box.appendChild(empty(liveRecords().length ? 'No records match.' : 'No collections yet. Tap Collect to add the first one.')); list.slice(0, 200).forEach(r => box.appendChild(recordRow(r))); if (list.length > 200) box.appendChild(T('div', 'note', 'Showing the newest 200. Narrow the filters or use a report for all.')); }
+  draw();
+};
+
+/* ================= follow-ups ================= */
+let fuView = 'today';
+R.fu = function(w){
+  const open = openFollowUps(), t = today(); const groups = {today: open.filter(f => f.dueDate === t), overdue: open.filter(f => f.dueDate < t), upcoming: open.filter(f => f.dueDate > t), done: D.followUps.filter(f => f.status === 'done')};
+  const top = T('div', 'card'); top.id = 'fuTop'; add(top, kv('Due today', String(groups.today.length), groups.today.length ? 'num' : ''), kv('Overdue', String(groups.overdue.length), groups.overdue.length ? 'neg' : ''), kv('Upcoming', String(groups.upcoming.length))); w.appendChild(top);
+  w.appendChild(chips([['today', 'Today (' + groups.today.length + ')'], ['overdue', 'Overdue (' + groups.overdue.length + ')'], ['upcoming', 'Upcoming (' + groups.upcoming.length + ')'], ['done', 'Done']].map(x => ({v: x[0], l: x[1]})), fuView, v => { fuView = v; rerender(); }, 'fuChips'));
+  const list = groups[fuView].slice().sort((a, b) => fuView === 'done' ? (b.doneAt || '').localeCompare(a.doneAt || '') : a.dueDate < b.dueDate ? -1 : a.dueDate > b.dueDate ? 1 : 0);
+  if (!list.length) w.appendChild(empty(fuView === 'done' ? 'Nothing marked done yet.' : 'Nothing here.'));
+  const box = T('div', 'day-group'); box.id = 'fuList';
+  list.slice(0, 200).forEach(f => {
+    const s = shopById(f.shopUid), r = recordById(f.recordId), c = T('div', 'sale-row'); c.setAttribute('data-fu', f.id);
+    const tp = T('div', 'sale-row-top'), mn = T('div', 'sale-row-main'); add(mn, T('div', 'shop', (s ? s.code + ' · ' + s.name : f.shopCode + ' · ' + f.shopName)), T('div', 'prod', [s && s.area, f.reason, r && itemsText(r)].filter(Boolean).join(' · ')));
+    const sd = T('div', 'sale-row-amt'); const late = f.dueDate < t ? daysBetween(f.dueDate, t) : 0; add(sd, T('div', 'amt', fmtDate(f.dueDate)), T('span', 'badge ' + (f.status === 'done' ? 'ok' : late ? 'bad' : f.dueDate === t ? 'warnb' : 'upi'), f.status === 'done' ? 'Done' : late ? late + ' days late' : f.dueDate === t ? 'Today' : 'Upcoming')); add(tp, mn, sd); c.appendChild(tp);
+    if (r && r.generalNotes) c.appendChild(T('div', 'said clip', r.generalNotes));
+    const acts = T('div', 'row-actions'); const op = T('button', 'btn-neutral', 'Open shop'); op.setAttribute('data-act', 'shop'); op.addEventListener('click', () => openShopProfile(f.shopUid));
+    const cl = T('button', 'btn-primary', 'Collect now'); cl.setAttribute('data-act', 'collect'); cl.style.width = 'auto'; cl.addEventListener('click', () => startCollect(f.shopUid)); add(acts, cl, op);
+    if (s && s.phone){ const ph = T('a', 'btn-secondary', 'Call'); ph.href = 'tel:' + s.phone.replace(/[^+\d]/g, ''); ph.style.cssText = 'text-align:center;text-decoration:none;display:block;padding:9px 12px;box-sizing:border-box'; acts.appendChild(ph); }
+    if (f.status === 'open'){ const dn = T('button', 'btn-secondary', 'Mark done'); dn.setAttribute('data-act', 'done'); dn.addEventListener('click', e => { e.stopPropagation(); markFollowUpDone(f); toast('Marked done'); rerender(); }); acts.appendChild(dn); }
+    c.appendChild(acts); box.appendChild(c);
+  }); w.appendChild(box);
+};
+
+/* ================= dashboard ================= */
+let dashDate = '';
+R.dash = function(w){
+  if (!dashDate) dashDate = today(); const d = dashDate, isToday = d === today();
+  const recs = liveRecords().filter(r => r.date === d), cnt = x => recs.filter(r => r.result === x).length;
+  const go2 = (patch) => { Object.assign(hF, BLANK_F, patch); go('hist', 'hist'); };
+  const nb = T('button', 'btn-primary', '+ New collection'); nb.id = 'btnDashNew'; nb.addEventListener('click', () => startCollect()); w.appendChild(nb);
+  const dc = T('div', 'card form-stack'); dc.appendChild(labeled('Day', Object.assign(textInput('date', dashDate, v => { if (validDate(v)){ dashDate = v; } }, {onchange: rerender}), {id: 'dashDate'}))); w.appendChild(dc);
+  w.appendChild(sectionLabel((isToday ? "Today's" : fmtDate(d)) + ' calls'));
+  w.appendChild(grid(kt(isToday ? "Today's collections" : 'Collections', String(recs.length), '', '', () => go2({period: 'custom', from: d, to: d}), 'tAll'), kt('Shops contacted', String(new Set(recs.map(r => r.shopUid)).size), '', '', () => go2({period: 'custom', from: d, to: d}), 'tShops'),
+    kt('Orders given', String(cnt('Order Given')), '', cnt('Order Given') ? 'pos' : '', () => go2({period: 'custom', from: d, to: d, result: 'Order Given'}), 'tOrders'), kt('Order later', String(cnt('Order Later')), '', '', () => go2({period: 'custom', from: d, to: d, result: 'Order Later'}), 'tLater'),
+    kt('Stock available', String(cnt('Stock Available')), '', '', () => go2({period: 'custom', from: d, to: d, result: 'Stock Available'}), 'tStock'), kt('No requirement today', String(cnt('No Requirement Today')), '', '', () => go2({period: 'custom', from: d, to: d, result: 'No Requirement Today'}), 'tNoReq'),
+    kt('Slow movement', String(cnt('Slow Movement')), '', cnt('Slow Movement') ? 'neg' : '', () => go2({period: 'custom', from: d, to: d, result: 'Slow Movement'}), 'tSlow'), kt('Product insights', String(D.insights.filter(i => i.status !== 'deleted' && i.date === d).length), '', '', () => go2({period: 'custom', from: d, to: d, hasInsight: 'yes'}), 'tIns')));
+  const open = openFollowUps(); w.appendChild(sectionLabel('Follow-ups'));
+  w.appendChild(grid(kt('Due today', String(open.filter(f => f.dueDate === today()).length), '', '', () => { fuView = 'today'; go('follow', 'fu'); }, 'tFuToday'), kt('Overdue', String(open.filter(f => f.dueDate < today()).length), '', open.some(f => f.dueDate < today()) ? 'neg' : '', () => { fuView = 'overdue'; go('follow', 'fu'); }, 'tFuOver')));
+  /* trends */
+  const tr = T('div', 'card form-stack'); tr.id = 'trendCard'; tr.appendChild(T('div', 'section-label', 'Last 7 days: calls and orders'));
+  const days = []; for (let i = 6; i >= 0; i--) days.push(addDays(today(), -i)); const live = liveRecords(), cdays = days.map(x => ({d: x, n: live.filter(r => r.date === x).length, o: live.filter(r => r.date === x && r.result === 'Order Given').length})), mx = Math.max(1, ...cdays.map(x => x.n));
+  cdays.forEach(x => { const r = T('div', 'rank'), rr = T('div', 'rr'), bar = T('div', 'bar'); bar.innerHTML = '<i style="width:' + Math.round(x.n / mx * 100) + '%"></i>'; add(rr, T('span', 'nm', fmtDate(x.d).slice(0, 5) + ' ' + dayName(x.d)), bar, T('b', 'num', x.n + (x.o ? '/' + x.o : ''))); r.appendChild(rr); tr.appendChild(r); }); tr.appendChild(T('div', 'note', 'Number of calls (and how many gave an order).')); w.appendChild(tr);
+  const from30 = addDays(today(), -29), l30 = live.filter(r => r.date >= from30), mixc = T('div', 'card form-stack'); mixc.id = 'mixCard'; mixc.appendChild(T('div', 'section-label', 'Last 30 days: what shops said'));
+  const mm = Math.max(1, ...RESULTS.map(x => l30.filter(r => r.result === x).length)); RESULTS.forEach(x => { const n = l30.filter(r => r.result === x).length; if (!n) return; const r = T('div', 'rank'), rr = T('div', 'rr'), bar = T('div', 'bar' + (['Slow Movement', 'Not Interested'].indexOf(x) >= 0 ? ' over' : '')); bar.innerHTML = '<i style="width:' + Math.round(n / mm * 100) + '%"></i>'; add(rr, T('span', 'nm', x), bar, T('b', 'num', String(n))); r.appendChild(rr); r.style.cursor = 'pointer'; r.addEventListener('click', () => go2({period: 'custom', from: from30, to: today(), result: x})); mixc.appendChild(r); }); if (!l30.length) mixc.appendChild(T('div', 'note', 'No calls in the last 30 days.')); w.appendChild(mixc);
+  const pq = {}; l30.filter(r => r.result === 'Order Given').forEach(r => (r.items || []).forEach(i => { pq[i.productName] = (pq[i.productName] || 0) + num(i.qty); })); const pk = Object.keys(pq).sort((a, b) => pq[b] - pq[a]);
+  if (pk.length){ const pc = T('div', 'card form-stack'); pc.id = 'prodTrend'; pc.appendChild(T('div', 'section-label', 'Last 30 days: quantity ordered')); pk.slice(0, 6).forEach(k => pc.appendChild(kv(k, String(pq[k])))); w.appendChild(pc); }
+  const idle = D.shops.filter(s => s.active !== false).map(s => ({s, st: shopStats(s.id)})).filter(x => x.st.flags.some(f => /^No order for|postpones|stock remaining/.test(f))).slice(0, 5);
+  if (idle.length){ const ic = T('div', 'card form-stack'); ic.id = 'attnCard'; ic.appendChild(T('div', 'section-label', 'Shops to look at')); idle.forEach(x => ic.appendChild(listRow({title: x.s.code + ' · ' + x.s.name, sub: x.st.flags.join(' · '), onclick: () => openShopProfile(x.s.id)}))); w.appendChild(ic); }
+};
+
+/* ================= shops ================= */
+let shopForm = null, shopOpen = null; const sF = {q: '', show: 'active'};
+function shopFormCard(){
+  const f = shopForm, c = T('div', 'card form-stack'); c.id = 'shopForm'; c.appendChild(T('div', 'section-label', f.id ? 'Edit shop' : 'New shop'));
+  const g = T('div', 'grid2'); add(g, labeled('Shop ID', Object.assign(textInput('text', f.code, v => f.code = v), {id: 'sfCode'})), labeled('Area / place', Object.assign(textInput('text', f.area, v => f.area = v, {list: 'areaList'}), {id: 'sfArea'}))); c.appendChild(g);
+  add(c, labeled('Shop name', Object.assign(textInput('text', f.name, v => f.name = v), {id: 'sfName'})), labeled('Address', Object.assign(textInput('text', f.address, v => f.address = v), {id: 'sfAddress'})));
+  const g2 = T('div', 'grid2'); add(g2, labeled('Contact number', Object.assign(textInput('tel', f.phone, v => f.phone = v), {id: 'sfPhone'})), labeled('GST number (if any)', Object.assign(textInput('text', f.gst, v => f.gst = v), {id: 'sfGst'}))); c.appendChild(g2);
+  c.appendChild(labeled('Notes (optional)', Object.assign(textInput('text', f.notes, v => f.notes = v), {id: 'sfNotes'})));
+  const ck = T('label', 'checkrow'), cb = T('input'); cb.type = 'checkbox'; cb.id = 'sfActive'; cb.checked = f.active !== false; cb.addEventListener('change', () => f.active = cb.checked); add(ck, cb, T('span', null, 'Active shop')); c.appendChild(ck);
+  const m = T('div', 'msg err'); m.id = 'sfErr'; m.hidden = true; c.appendChild(m); const row = T('div', 'row-actions'), sv = T('button', 'btn-primary', 'Save shop'); sv.id = 'sfSave';
+  sv.addEventListener('click', () => { try { const s = saveShop(f); save(); const back2 = f.fromCollect; shopForm = null; toast('Shop saved'); if (back2){ collectF = collectF || newCollect(); collectF.shopUid = s.id; go('collect', 'new'); } else rerender(); } catch(e){ showErr(m, e.message); } });
+  const cn = T('button', 'btn-secondary', 'Cancel'); cn.addEventListener('click', () => { const back2 = shopForm && shopForm.fromCollect; shopForm = null; if (back2) go('collect', 'new'); else rerender(); }); add(row, sv, cn); c.appendChild(row); return c;
+}
+R.shops = function(w){
+  if (shopOpen){ const s = shopById(shopOpen); if (s){ shopProfile(w, s); return; } shopOpen = null; }
+  const dl = T('datalist'); dl.id = 'areaList'; allAreas().forEach(a => { const o = T('option'); o.value = a; dl.appendChild(o); }); w.appendChild(dl);
+  const nb = T('button', 'btn-secondary', '+ Add shop'); nb.id = 'btnAddShop'; nb.addEventListener('click', () => { shopForm = {id: '', code: nextCode('SHP', D.shops), name: '', address: '', area: '', phone: '', gst: '', notes: '', active: true}; rerender(); }); w.appendChild(nb);
+  if (shopForm) w.appendChild(shopFormCard());
+  const c = T('div', 'card form-stack'); c.appendChild(textInput('search', sF.q, v => { sF.q = v; draw(); }, {id: 'shSearch', ph: 'Search Shop ID, name, area, phone'})); c.appendChild(chips([['active', 'Active'], ['inactive', 'Inactive'], ['all', 'All']].map(x => ({v: x[0], l: x[1]})), sF.show, v => { sF.show = v; rerender(); }, 'shShow')); w.appendChild(c);
+  const info = T('div', 'mini'); const box = T('div', 'day-group'); box.id = 'shopList'; w.appendChild(info); w.appendChild(box);
+  function draw(){ const q = norm(sF.q); const list = D.shops.filter(s => (sF.show === 'all' || (sF.show === 'active') === (s.active !== false)) && (!q || norm(s.code + ' ' + s.name + ' ' + s.area + ' ' + s.phone + ' ' + s.address).indexOf(q) >= 0)).sort((a, b) => a.name.localeCompare(b.name)); info.textContent = list.length + ' shops'; box.innerHTML = ''; if (!list.length) box.appendChild(empty(D.shops.length ? 'No shops match.' : 'No shops yet. Tap + Add shop, or bring them in below.'));
+    list.slice(0, 250).forEach(s => { const c2 = T('div', 'sale-row'); c2.setAttribute('data-shop', s.id); const tp = T('div', 'sale-row-top'), mn = T('div', 'sale-row-main'); const last = liveRecords().filter(r => r.shopUid === s.id).sort(byNewest)[0]; add(mn, T('div', 'shop', s.code + ' · ' + s.name), T('div', 'prod', [s.area, s.phone, last ? 'last ' + fmtDate(last.date) + ' ' + last.result : 'not contacted'].filter(Boolean).join(' · '))); const sd = T('div', 'sale-row-amt'); sd.appendChild(T('span', 'badge ' + (s.active === false ? 'returned' : 'ok'), s.active === false ? 'Inactive' : 'Active')); add(tp, mn, sd); tp.style.cursor = 'pointer'; tp.addEventListener('click', () => { shopOpen = s.id; rerender(); window.scrollTo(0, 0); }); c2.appendChild(tp); box.appendChild(c2); }); }
+  draw();
+  const im = T('details', 'card'); im.id = 'shopImport'; im.appendChild(T('summary', null, 'Bring in many shops at once')); const ib = T('div', 'form-stack'); ib.style.marginTop = '10px';
+  ib.appendChild(T('div', 'note', 'Type or paste one shop per line like: ABC Stores, Trichy, 9876543210 (name, area, phone). Or choose a Sales Register backup file to take the shop names from it (the Sales Register is only read, never changed). Shops that already exist are skipped.'));
+  const ta = T('textarea', 'codebox'); ta.id = 'shImpText'; ta.rows = 4; ta.placeholder = 'Shop list or backup text'; ib.appendChild(ta); const fi = T('input'); fi.type = 'file'; fi.id = 'shImpFile'; fi.addEventListener('change', () => { const f = fi.files && fi.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => importShops(rd.result); rd.readAsText(f); fi.value = ''; }); ib.appendChild(fi);
+  const bt = T('button', 'btn-secondary', 'Add these shops'); bt.id = 'btnImportShops'; bt.addEventListener('click', () => importShops(ta.value)); ib.appendChild(bt); const msg = T('div', 'msg'); msg.id = 'shImpMsg'; msg.hidden = true; ib.appendChild(msg); im.appendChild(ib); w.appendChild(im);
+  function importShops(text){
+    let items = []; try { const o = JSON.parse(text); const seen = {}; ((o && o.bills) || []).forEach(b => { const n = String(b.shopName || '').trim(); if (n && !seen[norm(n)]){ seen[norm(n)] = 1; items.push({name: n, area: '', phone: b.shopNo || ''}); } }); if (!items.length && o && o.app) { showErr(msg, 'No shops found in this file.'); return; } }
+    catch(e){ String(text || '').split(/\r?\n/).forEach(l => { const p = l.split(',').map(x => x.trim()); if (p[0]) items.push({name: p[0], area: p[1] || '', phone: p[2] || ''}); }); }
+    let added = 0, skipped = 0; items.forEach(x => { if (D.shops.some(s => norm(s.name) === norm(x.name) && (!x.area || norm(s.area) === norm(x.area) || !s.area))){ skipped++; return; } D.shops.push(stampNew({code: nextCode('SHP', D.shops), name: x.name, address: '', area: x.area, phone: x.phone, gst: '', notes: '', active: true})); added++; });
+    save(); msg.hidden = false; msg.textContent = added + ' shops added, ' + skipped + ' already there.'; toast(added + ' shops added'); draw(); }
+};
+function shopProfile(w, s){
+  const st = shopStats(s.id), bk = T('button', 'btn-secondary', '< All shops'); bk.id = 'btnShopBack'; bk.addEventListener('click', () => { shopOpen = null; rerender(); }); w.appendChild(bk);
+  if (shopForm && shopForm.id === s.id) w.appendChild(shopFormCard());
+  const c = T('div', 'card form-stack'); c.id = 'shopProfile'; add(c, T('h3', null, s.code + ' · ' + s.name), kv('Area', s.area || '-'), kv('Address', s.address || '-'), kv('Contact', s.phone || '-'), kv('GST', s.gst || '-'), kv('Status', s.active === false ? 'Inactive' : 'Active'), kv('Notes', s.notes || '-'));
+  const acts = T('div', 'row-actions'); const nc = T('button', 'btn-primary', 'Collect now'); nc.id = 'btnShopCollect'; nc.style.width = 'auto'; nc.addEventListener('click', () => startCollect(s.id)); const ed = T('button', 'btn-secondary', 'Edit'); ed.id = 'btnEditShop'; ed.addEventListener('click', () => { shopForm = Object.assign({}, s); rerender(); window.scrollTo(0, 0); });
+  const tg = T('button', 'btn-neutral', s.active === false ? 'Activate' : 'Deactivate'); tg.id = 'btnToggleShop'; tg.addEventListener('click', () => { s.active = s.active === false; s.updatedAt = nowIso(); save(); rerender(); }); add(acts, nc, ed, tg);
+  if (!shopUsed(s)){ const dl = armedDelete('Delete', () => { if (deleteShop(s)){ save(); shopOpen = null; toast('Shop deleted'); rerender(); } }); dl.id = 'btnDeleteShop'; acts.appendChild(dl); } else acts.appendChild(Object.assign(T('span', 'mini', 'Has history, so it cannot be deleted. Deactivate it instead.'), {style: 'align-self:center'}));
+  c.appendChild(acts); w.appendChild(c);
+  const sm = T('div', 'card form-stack'); sm.id = 'shopStats'; sm.appendChild(T('div', 'section-label', 'Reorder behaviour'));
+  add(sm, kv('Calls recorded', String(st.n)), kv('Orders given', String(st.by['Order Given'])), kv('Stock available', String(st.by['Stock Available'])), kv('Order later', String(st.by['Order Later'])), kv('No requirement', String(st.by['No Requirement Today'])), kv('Slow movement', String(st.by['Slow Movement'])), kv('Last order', st.last ? fmtDate(st.last) + ' (' + st.daysSince + ' days ago)' : 'None yet'), kv('Average days between orders', st.avg === null ? '-' : String(st.avg)));
+  st.flags.forEach(f => sm.appendChild(T('div', 'msg', f)));
+  if (st.expVs.length){ sm.appendChild(T('div', 'section-label', 'Promised order date vs actual')); st.expVs.slice(-6).forEach(e => sm.appendChild(kv('Promised ' + fmtDate(e.expected), e.actual ? 'ordered ' + fmtDate(e.actual) + (e.delay > 0 ? ' (' + e.delay + ' days late)' : e.delay < 0 ? ' (' + (-e.delay) + ' days early)' : ' (on time)') : 'not ordered yet'))); }
+  w.appendChild(sm);
+  const fu = openFollowUps().filter(f => f.shopUid === s.id); if (fu.length){ w.appendChild(sectionLabel('Open follow-ups')); fu.forEach(f => w.appendChild(listRow({title: fmtDate(f.dueDate), sub: f.reason, badge: [fuState(f), fuState(f) === 'overdue' ? 'bad' : 'warnb']}))); }
+  const insAll = D.insights.filter(i => i.shopUid === s.id && i.status !== 'deleted').sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+  w.appendChild(sectionLabel('Shop history (' + st.recs.length + ')')); const box = T('div', 'day-group'); box.id = 'shopHistory'; if (!st.recs.length) box.appendChild(empty('No calls recorded yet.')); st.recs.slice().reverse().forEach(r => { const row = recordRow(r, {noShop: true}); box.appendChild(row); }); w.appendChild(box);
+  if (insAll.length){ w.appendChild(sectionLabel('Product insights from this shop (' + insAll.length + ')')); insAll.forEach(i => { const b = T('div', 'card form-stack'); add(b, T('div', 'mini', fmtDate(i.date) + ' · ' + i.productId + ' · ' + i.productName), Object.assign(T('div', 'ins', i.note), {className: 'ins'})); b.addEventListener('click', () => openRecord(i.recordId)); w.appendChild(b); }); }
+}
+
+/* ================= products ================= */
+let prodForm = null, prodOpen = null; const pF = {q: '', show: 'active'};
+R.products = function(w){
+  if (prodOpen){ const p = productById(prodOpen); if (p){ productProfile(w, p); return; } prodOpen = null; }
+  const nb = T('button', 'btn-secondary', '+ Add product'); nb.id = 'btnAddProd'; nb.addEventListener('click', () => { prodForm = {id: '', code: nextCode('PRD', D.products), name: '', category: '', unit: 'packet', active: true}; rerender(); }); w.appendChild(nb);
+  if (prodForm) w.appendChild(productFormCard());
+  w.appendChild(chips([['active', 'Active'], ['inactive', 'Inactive'], ['all', 'All']].map(x => ({v: x[0], l: x[1]})), pF.show, v => { pF.show = v; rerender(); }, 'prShow'));
+  const list = D.products.filter(p => pF.show === 'all' || (pF.show === 'active') === (p.active !== false)).sort((a, b) => a.name.localeCompare(b.name)); const box = T('div', 'day-group'); box.id = 'prodList'; if (!list.length) box.appendChild(empty('No products here.'));
+  list.forEach(p => { const c = T('div', 'sale-row'); c.setAttribute('data-prod', p.id); const tp = T('div', 'sale-row-top'), mn = T('div', 'sale-row-main'); const n = liveRecords().filter(r => (r.items || []).some(i => i.productUid === p.id)).length; add(mn, T('div', 'shop', p.code + ' · ' + p.name), T('div', 'prod', [p.category, p.unit, n + ' calls'].filter(Boolean).join(' · '))); const sd = T('div', 'sale-row-amt'); sd.appendChild(T('span', 'badge ' + (p.active === false ? 'returned' : 'ok'), p.active === false ? 'Inactive' : 'Active')); add(tp, mn, sd); tp.style.cursor = 'pointer'; tp.addEventListener('click', () => { prodOpen = p.id; rerender(); window.scrollTo(0, 0); }); c.appendChild(tp); box.appendChild(c); }); w.appendChild(box);
+};
+function productFormCard(){
+  const f = prodForm, c = T('div', 'card form-stack'); c.id = 'prodForm'; c.appendChild(T('div', 'section-label', f.id ? 'Edit product' : 'New product'));
+  const g = T('div', 'grid2'); add(g, labeled('Product ID', Object.assign(textInput('text', f.code, v => f.code = v), {id: 'pfCode'})), labeled('Unit', Object.assign(textInput('text', f.unit, v => f.unit = v), {id: 'pfUnit'}))); c.appendChild(g);
+  add(c, labeled('Product name', Object.assign(textInput('text', f.name, v => f.name = v), {id: 'pfName'})), labeled('Product category', Object.assign(textInput('text', f.category, v => f.category = v, {list: 'catList'}), {id: 'pfCat'})));
+  const dl = T('datalist'); dl.id = 'catList'; Array.from(new Set(D.products.map(p => p.category).filter(Boolean))).forEach(a => { const o = T('option'); o.value = a; dl.appendChild(o); }); c.appendChild(dl);
+  const ck = T('label', 'checkrow'), cb = T('input'); cb.type = 'checkbox'; cb.id = 'pfActive'; cb.checked = f.active !== false; cb.addEventListener('change', () => f.active = cb.checked); add(ck, cb, T('span', null, 'Active product')); c.appendChild(ck);
+  const m = T('div', 'msg err'); m.id = 'pfErr'; m.hidden = true; c.appendChild(m); const row = T('div', 'row-actions'), sv = T('button', 'btn-primary', 'Save product'); sv.id = 'pfSave';
+  sv.addEventListener('click', () => { try { saveProduct(f); save(); prodForm = null; toast('Product saved'); rerender(); } catch(e){ showErr(m, e.message); } });
+  const cn = T('button', 'btn-secondary', 'Cancel'); cn.addEventListener('click', () => { prodForm = null; rerender(); }); add(row, sv, cn); c.appendChild(row); return c;
+}
+function productProfile(w, p){
+  const bk = T('button', 'btn-secondary', '< All products'); bk.id = 'btnProdBack'; bk.addEventListener('click', () => { prodOpen = null; rerender(); }); w.appendChild(bk);
+  if (prodForm && prodForm.id === p.id) w.appendChild(productFormCard());
+  const recs = liveRecords().filter(r => (r.items || []).some(i => i.productUid === p.id)).sort(byNewest), ins = D.insights.filter(i => i.productUid === p.id && i.status !== 'deleted').sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+  const orders = recs.filter(r => r.result === 'Order Given'), qty = orders.reduce((s, r) => s + sumBy((r.items || []).filter(i => i.productUid === p.id), i => i.qty), 0);
+  const c = T('div', 'card form-stack'); c.id = 'prodProfile'; add(c, T('h3', null, p.code + ' · ' + p.name), kv('Category', p.category || '-'), kv('Unit', p.unit), kv('Status', p.active === false ? 'Inactive' : 'Active'), kv('Calls about this product', String(recs.length)), kv('Orders given', String(orders.length)), kv('Total quantity ordered', qty + ' ' + p.unit), kv('Stock available answers', String(recs.filter(r => r.result === 'Stock Available').length)), kv('Slow movement', String(recs.filter(r => r.result === 'Slow Movement').length)), kv('Product insights', String(ins.length)));
+  const acts = T('div', 'row-actions'), ed = T('button', 'btn-secondary', 'Edit'); ed.id = 'btnEditProd'; ed.addEventListener('click', () => { prodForm = Object.assign({}, p); rerender(); window.scrollTo(0, 0); }); const tg = T('button', 'btn-neutral', p.active === false ? 'Activate' : 'Deactivate'); tg.id = 'btnToggleProd'; tg.addEventListener('click', () => { p.active = p.active === false; p.updatedAt = nowIso(); save(); rerender(); }); add(acts, ed, tg);
+  if (!productUsed(p)){ const dl = armedDelete('Delete', () => { if (deleteProduct(p)){ save(); prodOpen = null; toast('Product deleted'); rerender(); } }); dl.id = 'btnDeleteProd'; acts.appendChild(dl); } else acts.appendChild(Object.assign(T('span', 'mini', 'Used in records, so it cannot be deleted. Deactivate it instead.'), {style: 'align-self:center'})); c.appendChild(acts); w.appendChild(c);
+  if (ins.length){ w.appendChild(sectionLabel('Product insights (' + ins.length + ')')); ins.forEach(i => { const b = T('div', 'card form-stack'); add(b, T('div', 'mini', fmtDate(i.date) + ' · ' + i.shopCode + ' · ' + i.shopName), T('div', 'ins', i.note)); b.addEventListener('click', () => openRecord(i.recordId)); w.appendChild(b); }); }
+  w.appendChild(sectionLabel('Order collection history (' + recs.length + ')')); const box = T('div', 'day-group'); box.id = 'prodHistory'; if (!recs.length) box.appendChild(empty('Not discussed in any call yet.')); recs.slice(0, 100).forEach(r => box.appendChild(recordRow(r))); w.appendChild(box);
+}
+
+/* ================= small helpers ================= */
+const sumBy = (a, fn) => a.reduce((s, x) => s + num(fn(x)), 0);
+
+/* ================= reports ================= */
+const rpF = Object.assign({}, BLANK_F, {kind: 'collections', notes: true, insights: true});
+const REPORT_KINDS = [['collections', 'Order collection'], ['insights', 'Product insights'], ['followups', 'Follow-ups'], ['shops', 'Shop reorder summary']];
+function insightsFor(F, recs){
+  const ids = {}; recs.forEach(r => ids[r.id] = 1);
+  return D.insights.filter(i => i.status !== 'deleted' && ids[i.recordId] && (!F.product || i.productUid === F.product)).sort((a, b) => (b.date + (b.time || '')).localeCompare(a.date + (a.time || '')));
+}
+function filterText(F){
+  const p = [rangeText(stRange(F))]; if (F.shop){ const s = shopById(F.shop); p.push('Shop: ' + (s ? s.code + ' ' + s.name : '?')); } if (F.product){ const x = productById(F.product); p.push('Product: ' + (x ? x.code + ' ' + x.name : '?')); }
+  if (F.result) p.push('Result: ' + F.result); if (F.area) p.push('Area: ' + F.area); if (F.fu) p.push('Follow-up: ' + F.fu); if (F.hasInsight) p.push('Insight: ' + F.hasInsight); if (F.q) p.push('Search: ' + F.q); return p.join(' | ');
+}
+function buildReport(F){
+  const recs = recordsFiltered(F), sub = filterText(F), stamp = today();
+  if (F.kind === 'insights'){
+    const ins = insightsFor(F, recs), byP = {}; ins.forEach(i => { const k = i.productId + ' ' + i.productName; byP[k] = (byP[k] || 0) + 1; });
+    return {title: 'Product Insights', subtitle: sub, fileName: 'RETCO_Product_Insights_' + stamp, summary: [['Insights', String(ins.length)], ['Products', String(Object.keys(byP).length)], ['Shops', String(new Set(ins.map(i => i.shopUid)).size)]],
+      sections: [{heading: 'Product insights (original wording, separate from General Notes)', cols: [{h: 'Date', w: 9}, {h: 'Shop ID', w: 8}, {h: 'Shop', w: 16}, {h: 'Product ID', w: 8}, {h: 'Product', w: 14}, {h: 'Insight', w: 45}], rows: ins.map(i => [fmtDate(i.date), i.shopCode, i.shopName, i.productId, i.productName, i.note]), note: ins.length ? '' : 'No product insights match.'},
+        {heading: 'Insights per product', cols: [{h: 'Product', w: 80}, {h: 'Count', w: 20, a: 'r'}], rows: Object.keys(byP).sort((a, b) => byP[b] - byP[a]).map(k => [k, String(byP[k])])}]};
+  }
+  if (F.kind === 'followups'){
+    const rows = recs.filter(r => r.followUpDate).sort((a, b) => a.followUpDate < b.followUpDate ? -1 : 1);
+    return {title: 'Follow-ups', subtitle: sub, fileName: 'RETCO_Follow_ups_' + stamp, summary: [['Follow-ups', String(rows.length)], ['Overdue', String(rows.filter(r => recFuStatus(r) === 'overdue').length)], ['Done', String(rows.filter(r => recFuStatus(r) === 'done').length)]],
+      sections: [{heading: 'Follow-ups', cols: [{h: 'Due', w: 10}, {h: 'Status', w: 10}, {h: 'Shop ID', w: 8}, {h: 'Shop', w: 20}, {h: 'Area', w: 12}, {h: 'Call date', w: 10}, {h: 'Result', w: 14}, {h: 'Reason / note', w: 16}], rows: rows.map(r => [fmtDate(r.followUpDate), recFuStatus(r), shopCode(r), shopName(r), shopArea(r), fmtDate(r.date), r.result, r.followUpReason || '']), note: rows.length ? '' : 'No follow-ups match.'}]};
+  }
+  if (F.kind === 'shops'){
+    let shops = D.shops.filter(s => (!F.shop || s.id === F.shop) && (!F.area || norm(s.area) === norm(F.area)) && s.active !== false); const rg = stRange(F);
+    const rows = shops.map(s => { const st = shopStats(s.id), inR = st.recs.filter(r => inRange(r.date, rg[0], rg[1])); return [s.code, s.name, s.area, String(inR.length), String(inR.filter(r => r.result === 'Order Given').length), String(inR.filter(r => r.result === 'Order Later').length), String(inR.filter(r => r.result === 'Slow Movement').length), st.last ? fmtDate(st.last) : '-', st.avg === null ? '-' : String(Math.round(st.avg)), st.flags.filter(f => !/^Orders about/.test(f)).join('; ')]; });
+    return {title: 'Shop Reorder Summary', subtitle: sub, fileName: 'RETCO_Shop_Reorder_' + stamp, summary: [['Shops', String(rows.length)]], sections: [{heading: 'Shops', cols: [{h: 'ID', w: 6}, {h: 'Shop', w: 17}, {h: 'Area', w: 10}, {h: 'Calls', w: 6, a: 'r'}, {h: 'Orders', w: 7, a: 'r'}, {h: 'Later', w: 6, a: 'r'}, {h: 'Slow', w: 6, a: 'r'}, {h: 'Last order', w: 10}, {h: 'Avg days', w: 7, a: 'r'}, {h: 'Notes', w: 25}], rows, note: rows.length ? '' : 'No shops match.'}]};
+  }
+  /* collections: three clearly separate sections */
+  const by = {}; RESULTS.forEach(x => by[x] = recs.filter(r => r.result === x).length);
+  const sections = [{heading: 'Order collection records', cols: [{h: 'Date', w: 9}, {h: 'Shop ID', w: 8}, {h: 'Shop', w: 18}, {h: 'Area', w: 10}, {h: 'Result', w: 14}, {h: 'Products / quantity', w: 26}, {h: 'Follow-up', w: 15}], rows: recs.map(r => [fmtDate(r.date), shopCode(r), shopName(r), shopArea(r), r.result, itemsText(r), r.followUpDate ? fmtDate(r.followUpDate) : '']), note: recs.length ? '' : 'No records match.'}];
+  if (F.notes){ const nr = recs.filter(r => r.generalNotes); sections.push({heading: 'General Notes (exactly as the shop said)', cols: [{h: 'Date', w: 9}, {h: 'Shop', w: 20}, {h: 'Result', w: 13}, {h: 'General note', w: 58}], rows: nr.map(r => [fmtDate(r.date), shopCode(r) + ' ' + shopName(r), r.result, r.generalNotes]), note: nr.length ? '' : 'No general notes in these records.'}); }
+  let insN = 0; if (F.insights){ const ins = insightsFor(F, recs); insN = ins.length; sections.push({heading: 'Product Insights (separate from General Notes)', cols: [{h: 'Date', w: 9}, {h: 'Shop', w: 17}, {h: 'Product ID', w: 8}, {h: 'Product', w: 14}, {h: 'Insight', w: 52}], rows: ins.map(i => [fmtDate(i.date), i.shopCode + ' ' + i.shopName, i.productId, i.productName, i.note]), note: ins.length ? '' : 'No product insights in these records.'}); }
+  return {title: 'Order Collection Report', subtitle: sub, fileName: 'RETCO_Order_Collection_' + stamp, summary: [['Calls', String(recs.length)], ['Shops contacted', String(new Set(recs.map(r => r.shopUid)).size)]].concat(RESULTS.filter(x => by[x]).map(x => [x, String(by[x])])).concat(F.insights ? [['Product insights', String(insN)]] : []), sections};
+}
+R.reports = function(w){
+  const c = T('div', 'card form-stack'); c.id = 'reportCard'; c.appendChild(T('div', 'section-label', 'Report type'));
+  c.appendChild(chipset(REPORT_KINDS, rpF.kind, v => { rpF.kind = v; rerender(); }, 'rpKind'));
+  c.appendChild(textInput('search', rpF.q, v => { rpF.q = v; upd(); }, {id: 'rpSearch', ph: 'Search shop, product, notes'}));
+  c.appendChild(filterControls(rpF, rerender, 'r'));
+  if (rpF.kind === 'collections'){ [['notes', 'Include General Notes section'], ['insights', 'Include Product Insights section']].forEach(x => { const ck = T('label', 'checkrow'), cb = T('input'); cb.type = 'checkbox'; cb.id = 'rp_' + x[0]; cb.checked = !!rpF[x[0]]; cb.addEventListener('change', () => { rpF[x[0]] = cb.checked; upd(); }); add(ck, cb, T('span', null, x[1])); c.appendChild(ck); }); }
+  const info = T('div', 'msg'); info.id = 'rpInfo'; c.appendChild(info);
+  const acts = T('div', 'row-actions'); [['View / Print', 'view', 'btnRpView', 'btn-primary'], ['PDF (download / share)', 'pdf', 'btnRpPdf', 'btn-secondary'], ['CSV', 'csv', 'btnRpCsv', 'btn-secondary']].forEach(x => { const b = T('button', x[3], x[0]); b.id = x[2]; b.addEventListener('click', () => { const m = buildReport(rpF); if (!m.sections.some(s => s.rows.length)){ toast('Nothing matches these filters'); return; } openReport(m, x[1]); }); acts.appendChild(b); }); c.appendChild(acts);
+  const cl = T('button', 'btn-secondary', 'Clear filters'); cl.id = 'btnClearRp'; cl.addEventListener('click', () => { const k = rpF.kind; Object.assign(rpF, BLANK_F, {kind: k, notes: true, insights: true}); rerender(); }); c.appendChild(cl); w.appendChild(c);
+  function upd(){ const m = buildReport(rpF); info.textContent = m.summary.map(p => p[0] + ': ' + p[1]).join(' · ') || 'Nothing'; } upd();
+};
+
+/* PDF drawn on canvas pages so Tamil (and any language) prints with the phone's own fonts */
+function reportPdf(m){
+  const W = 794, H = 1123, S = 2, M = 34, FONT = 'Arial, "Noto Sans Tamil", "Nirmala UI", "Latha", sans-serif', pages = []; let cv, cx, y;
+  const seg2 = (typeof Intl !== 'undefined' && Intl.Segmenter) ? new Intl.Segmenter(undefined, {granularity: 'grapheme'}) : null;
+  const gl = s => seg2 ? Array.from(seg2.segment(s), x => x.segment) : Array.from(s);
+  function newPage(){ cv = document.createElement('canvas'); cv.width = W * S; cv.height = H * S; cx = cv.getContext('2d'); cx.scale(S, S); cx.fillStyle = '#fff'; cx.fillRect(0, 0, W, H); cx.textBaseline = 'top'; pages.push(cv); y = M; }
+  const font = (sz, b) => { cx.font = (b ? 'bold ' : '') + sz + 'px ' + FONT; };
+  function wrap(t, wd, sz, b){
+    font(sz, b); const out = [];
+    String(t === undefined || t === null ? '' : t).split('\n').forEach(par => { let line = ''; par.split(' ').forEach(word => { const test = line ? line + ' ' + word : word; if (cx.measureText(test).width <= wd){ line = test; return; } if (line){ out.push(line); line = ''; } if (cx.measureText(word).width <= wd){ line = word; return; } gl(word).forEach(ch => { if (cx.measureText(line + ch).width > wd && line){ out.push(line); line = ch; } else line += ch; }); }); out.push(line); });
+    return out;
+  }
+  const text = (t, x, yy, sz, b, color, al) => { font(sz, b); cx.fillStyle = color || '#111'; cx.textAlign = al || 'left'; cx.fillText(t, x, yy); cx.textAlign = 'left'; };
+  const LH = 15, company = D.settings;
+  function header(first){
+    if (first){
+      text(company.companyName || '', M, y, 18, true); const addr = wrap((company.address || '') + (company.phone ? ' | ' + company.phone : ''), 360, 10.5); addr.forEach((l, i) => text(l, M, y + 24 + i * 13, 10.5, false, '#444'));
+      text(m.title, W - M, y, 16, true, '#111', 'right'); wrap(m.subtitle, 330, 10.5).forEach((l, i) => text(l, W - M, y + 22 + i * 13, 10.5, false, '#444', 'right'));
+      y += Math.max(24 + addr.length * 13, 22 + wrap(m.subtitle, 330, 10.5).length * 13) + 6; cx.fillStyle = '#222'; cx.fillRect(M, y, W - 2 * M, 1.5); y += 12;
+      if (m.summary.length){ let lines = [], cur = '', xx = 0; const items = m.summary.map(p => p[0] + ': ' + p[1]); font(11, true); items.forEach(it => { const wd = cx.measureText(it).width + 22; if (xx + wd > W - 2 * M - 16 && lines.length + 1 >= 0 && cur){ lines.push(cur); cur = ''; xx = 0; } cur += (cur ? '   |   ' : '') + it; xx += wd; }); if (cur) lines.push(cur);
+        const bh = lines.length * 16 + 12; cx.fillStyle = '#f5f0e4'; cx.fillRect(M, y, W - 2 * M, bh); cx.strokeStyle = '#ddd'; cx.strokeRect(M, y, W - 2 * M, bh); lines.forEach((l, i) => text(l, M + 8, y + 7 + i * 16, 11, true)); y += bh + 12; }
+    } else { text(m.title + ' (continued)', M, y, 11, true, '#555'); y += 20; }
+  }
+  newPage(); header(true);
+  m.sections.forEach(sec => {
+    const tw = W - 2 * M, tot = sec.cols.reduce((a, c) => a + c.w, 0), cw = sec.cols.map(c => c.w / tot * tw);
+    const need = 34 + 30; if (y + need > H - 40){ newPage(); header(false); }
+    text(sec.heading, M, y, 12.5, true); y += 20;
+    const drawHead = () => { cx.fillStyle = '#ece3d0'; cx.fillRect(M, y, tw, 20); let xx = M; sec.cols.forEach((c, i) => { text(c.h, c.a === 'r' ? xx + cw[i] - 5 : xx + 5, y + 4, 10.5, true, '#111', c.a === 'r' ? 'right' : 'left'); xx += cw[i]; }); y += 20; };
+    drawHead(); if (!sec.rows.length && sec.note){ text(sec.note, M + 5, y + 5, 10.5, false, '#666'); y += 24; }
+    sec.rows.forEach(row => {
+      const cells = row.map((v, i) => wrap(v, cw[i] - 10, 10.5)), lines = Math.max(1, ...cells.map(c => c.length)), rh = lines * 13.5 + 8;
+      if (y + rh > H - 40){ newPage(); header(false); drawHead(); }
+      let xx = M; cells.forEach((cl, i) => { cl.forEach((l, k) => text(l, sec.cols[i].a === 'r' ? xx + cw[i] - 5 : xx + 5, y + 4 + k * 13.5, 10.5, false, '#111', sec.cols[i].a === 'r' ? 'right' : 'left')); xx += cw[i]; });
+      cx.fillStyle = '#ddd'; cx.fillRect(M, y + rh - 1, tw, 0.8); y += rh;
+    });
+    if (sec.foot){ cx.fillStyle = '#f5f0e4'; cx.fillRect(M, y, tw, 20); let xx = M; sec.foot.forEach((v, i) => { text(String(v), sec.cols[i].a === 'r' ? xx + cw[i] - 5 : xx + 5, y + 4, 10.5, true, '#111', sec.cols[i].a === 'r' ? 'right' : 'left'); xx += cw[i]; }); y += 22; }
+    y += 14;
+  });
+  const n = pages.length; pages.forEach((p, i) => { cv = p; cx = p.getContext('2d'); text('Generated ' + genStamp() + ' by ' + (company.user || ''), M, H - 28, 9, false, '#777'); text('Page ' + (i + 1) + ' of ' + n, W - M, H - 28, 9, false, '#777', 'right'); });
+  const doc = new window.jspdf.jsPDF({unit: 'pt', format: 'a4', orientation: 'portrait'}), pw = doc.internal.pageSize.getWidth ? doc.internal.pageSize.getWidth() : 595.28, ph = doc.internal.pageSize.getHeight ? doc.internal.pageSize.getHeight() : 841.89;
+  pages.forEach((p, i) => { if (i) doc.addPage(); doc.addImage(p.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pw, ph); });
+  return doc;
+}
+
+/* ================= backup & restore ================= */
+function backupObject(){ return {app: 'retco-order-collection', version: VERSION, exportedAt: nowIso(), exportedBy: D.settings.user, fileName: 'retco_order_collection_backup_' + today() + '.json', settings: D.settings, shops: D.shops, products: D.products, records: D.records, insights: D.insights, followUps: D.followUps}; }
+function validateBackup(o){
+  if (!o || typeof o !== 'object') return 'This is not a backup file.'; if (o.app !== 'retco-order-collection') return 'This is not an Order Collection backup (it says "' + (o.app || 'unknown') + '").'; if (!(num(o.version) >= 1)) return 'The backup has no version.'; if (num(o.version) > VERSION) return 'This backup is from a newer version of the app. Update the app first.';
+  for (const t of TABLES) if (!Array.isArray(o[t])) return 'The backup is damaged: "' + t + '" is missing.';
+  for (const r of o.records) if (!r || !r.id || !validDate(r.date) || RESULTS.indexOf(r.result) < 0) return 'The backup is damaged: a record has a bad date or result.';
+  for (const s of o.shops) if (!s || !s.id || !s.name) return 'The backup is damaged: a shop has no name.'; for (const p of o.products) if (!p || !p.id || !p.name) return 'The backup is damaged: a product has no name.'; for (const i of o.insights) if (!i || !i.id || !i.recordId) return 'The backup is damaged: an insight is not linked to a record.'; return '';
+}
+const backupCounts = o => TABLES.map(t => (o[t] || []).length + ' ' + t).join(', ');
+function mergeBackup(o){
+  const added = {}, conflicts = []; let skipped = 0;
+  TABLES.forEach(t => { added[t] = 0; o[t].forEach(r => {
+    if (!r || !r.id) return; if (D[t].some(x => x.id === r.id)){ skipped++; return; }
+    if ((t === 'shops' || t === 'products') && D[t].some(x => norm(x.code) === norm(r.code))){ conflicts.push((t === 'shops' ? 'Shop ' : 'Product ') + r.code + ' ' + r.name + ' (that ID is already used on this phone, so it was left out)'); return; }
+    D[t].push(r); added[t]++; }); });
+  return {added, skipped, conflicts};
+}
+function replaceWithBackup(o){
+  try { localStorage.setItem(KEY + '_prev', JSON.stringify(D)); } catch(e){}
+  const b = blankDB(); b.settings = Object.assign(b.settings, o.settings || {}); TABLES.forEach(t => { b[t] = o[t]; }); D = b;
+}
+function insightsTransfer(){
+  return {app: 'retco-order-collection-insights', version: 1, exportedAt: nowIso(), source: 'RETCO Order Collection', note: 'Product insights for the Customer & Market Insights app. "note" is the original wording.', insights: D.insights.filter(i => i.status !== 'deleted').map(i => ({id: i.id, recordId: i.recordId, date: i.date, time: i.time || '', shopId: i.shopCode, shopName: i.shopName, area: i.area || '', productId: i.productId, productName: i.productName, note: i.note, createdAt: i.createdAt}))};
+}
+let bkSt = {obj: null, name: '', err: '', mode: 'merge', msg: ''};
+function loadBackupText(text, name){ try { const o = JSON.parse(text), err = validateBackup(o); bkSt = {obj: err ? null : o, name, err, mode: 'merge', msg: ''}; } catch(e){ bkSt = {obj: null, name, err: 'This is not a valid backup file (cannot read it).', mode: 'merge', msg: ''}; } rerender(); }
+R.backup = function(w){
+  const c = T('div', 'card form-stack'); c.id = 'backupCard'; c.appendChild(T('div', 'section-label', 'Backup and export'));
+  add(c, kv('Last backup', D.settings.lastBackup ? String(D.settings.lastBackup).replace('T', ' ').slice(0, 16) : 'Never'), kv('Saved on this phone', backupCounts(backupObject())));
+  c.appendChild(T('div', 'note', 'Everything is saved on this phone only. Make a backup often and keep the file safe (send it to yourself on WhatsApp). When Supabase is connected later, the cloud copy becomes the main one.'));
+  const b1 = T('button', 'btn-primary', 'Save full backup (JSON)'); b1.id = 'btnBackupFile'; b1.addEventListener('click', () => { const o = backupObject(); D.settings.lastBackup = o.exportedAt; save(); downloadBlob(new Blob([JSON.stringify(o)], {type: 'application/json'}), o.fileName); toast('Backup saved: ' + o.fileName); rerender(); }); c.appendChild(b1);
+  const g = T('div', 'grid2'); const mk = (label, id, fn) => { const b = T('button', 'btn-secondary', label); b.id = id; b.addEventListener('click', fn); return b; };
+  add(g, mk('Order records (CSV)', 'btnCsvRecords', () => { const rows = [['date', 'time', 'shop_id', 'shop_name', 'area', 'phone', 'result', 'products', 'delivery_date', 'follow_up_date', 'follow_up_reason', 'general_notes', 'insights_count', 'record_id', 'status']]; liveRecords().sort(byOldest).forEach(r => rows.push([r.date, r.time || '', shopCode(r), shopName(r), shopArea(r), r.phone || '', r.result, itemsText(r), r.deliveryDate || '', r.followUpDate || '', r.followUpReason || '', r.generalNotes || '', insightsOf(r.id).length, r.id, r.status || 'active'])); downloadCSV(rows, 'RETCO_Order_Records_' + today() + '.csv'); }),
+    mk('Product insights (CSV)', 'btnCsvInsights', () => { const rows = [['date', 'time', 'shop_id', 'shop_name', 'area', 'product_id', 'product_name', 'insight_original_text', 'record_id', 'insight_id']]; D.insights.filter(i => i.status !== 'deleted').forEach(i => rows.push([i.date, i.time || '', i.shopCode, i.shopName, i.area || '', i.productId, i.productName, i.note, i.recordId, i.id])); downloadCSV(rows, 'RETCO_Product_Insights_' + today() + '.csv'); }),
+    mk('Shops (CSV)', 'btnCsvShops', () => { const rows = [['shop_id', 'name', 'area', 'address', 'phone', 'gst', 'status', 'notes']]; D.shops.forEach(s => rows.push([s.code, s.name, s.area, s.address, s.phone, s.gst, s.active === false ? 'inactive' : 'active', s.notes])); downloadCSV(rows, 'RETCO_Shops_' + today() + '.csv'); }),
+    mk('Products (CSV)', 'btnCsvProducts', () => { const rows = [['product_id', 'name', 'category', 'unit', 'status']]; D.products.forEach(p => rows.push([p.code, p.name, p.category, p.unit, p.active === false ? 'inactive' : 'active'])); downloadCSV(rows, 'RETCO_Products_' + today() + '.csv'); })); c.appendChild(g);
+  const tr = mk('Product insights for the Customer & Market Insights app (JSON)', 'btnInsTransfer', () => { downloadBlob(new Blob([JSON.stringify(insightsTransfer())], {type: 'application/json'}), 'retco_oc_insights_' + today() + '.json'); toast('Insights file saved'); }); c.appendChild(tr); w.appendChild(c);
+  const r = T('div', 'card form-stack'); r.id = 'restoreCard'; r.appendChild(T('div', 'section-label', 'Restore a backup'));
+  const fi = T('input'); fi.type = 'file'; fi.id = 'bkFile'; fi.accept = '.json,application/json,text/plain'; fi.addEventListener('change', () => { const f = fi.files && fi.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => loadBackupText(rd.result, f.name); rd.readAsText(f); fi.value = ''; }); r.appendChild(labeled('Choose a backup file', fi));
+  const ta = T('textarea', 'codebox'); ta.id = 'bkText'; ta.rows = 3; ta.placeholder = 'Or paste the backup text'; r.appendChild(labeled('Or paste the backup text', ta)); const ck = T('button', 'btn-secondary', 'Check this text'); ck.id = 'btnCheckBackup'; ck.addEventListener('click', () => { if (!ta.value.trim()){ toast('Paste the backup text first'); return; } loadBackupText(ta.value, 'pasted text'); }); r.appendChild(ck);
+  if (bkSt.err){ const m = T('div', 'msg err', bkSt.err); m.id = 'bkErr'; r.appendChild(m); } if (bkSt.msg){ const m = T('div', 'msg', bkSt.msg); m.id = 'bkMsg'; r.appendChild(m); }
+  if (bkSt.obj){ const o = bkSt.obj, box = T('div', 'msg'); box.id = 'bkPreview'; add(box, T('b', null, 'Valid backup: ' + bkSt.name)); box.appendChild(T('div', null, 'Made on ' + String(o.exportedAt || '').replace('T', ' ').slice(0, 16) + ' (version ' + o.version + ')')); box.appendChild(T('div', null, 'Contains: ' + backupCounts(o))); box.appendChild(T('div', null, 'Records not on this phone yet: ' + o.records.filter(x => !D.records.some(y => y.id === x.id)).length)); r.appendChild(box);
+    r.appendChild(seg([{v: 'merge', l: 'Add what is missing (safe)'}, {v: 'replace', l: 'Replace everything'}], bkSt.mode, v => { bkSt.mode = v; rerender(); }));
+    if (bkSt.mode === 'replace') r.appendChild(T('div', 'msg err', 'Replace deletes everything now on this phone and puts the backup in its place. A safety copy of the current data is kept once, but make a backup first.'));
+    const go2 = T('button', bkSt.mode === 'replace' ? 'btn-warn' : 'btn-primary', bkSt.mode === 'replace' ? 'Replace everything with this backup' : 'Add missing records'); go2.id = 'btnRestoreNow';
+    go2.addEventListener('click', () => { if (bkSt.mode === 'replace' && !confirm('This will delete all data now on this phone and replace it with the backup. Continue?')) return;
+      if (bkSt.mode === 'replace'){ replaceWithBackup(o); save(); bkSt = {obj: null, name: '', err: '', mode: 'merge', msg: 'Restored. Everything was replaced by the backup.'}; }
+      else { const res = mergeBackup(o); save(); const n = Object.keys(res.added).reduce((s, k) => s + res.added[k], 0); bkSt = {obj: null, name: '', err: '', mode: 'merge', msg: (n ? 'Added ' + n + ' items. ' : 'Nothing new to add. ') + res.skipped + ' already here, nothing was overwritten.' + (res.conflicts.length ? ' Left out: ' + res.conflicts.join('; ') : '')}; }
+      toast('Restore done'); rerender(); }); r.appendChild(go2); }
+  w.appendChild(r);
+};
+
+/* ================= settings ================= */
+function setTheme(v){ D.settings.theme = v; try { localStorage.setItem('retco_oc_theme', v); } catch(e){} applyTheme(v); save(); }
+function applyTheme(v){ const r = document.documentElement; if (v === 'dark' || v === 'light') r.setAttribute('data-theme', v); else r.removeAttribute('data-theme'); }
+R.settings = function(w){
+  const s = D.settings, c = T('div', 'card form-stack'); c.id = 'settingsCard'; c.appendChild(T('div', 'section-label', 'Business and user'));
+  add(c, labeled('Business name', Object.assign(textInput('text', s.companyName, v => { s.companyName = v; }), {id: 'stName'})), labeled('Address', Object.assign(textInput('text', s.address, v => { s.address = v; }), {id: 'stAddress'})), labeled('Phone', Object.assign(textInput('tel', s.phone, v => { s.phone = v; }), {id: 'stPhone'})), labeled('Your name (shown on reports)', Object.assign(textInput('text', s.user, v => { s.user = v; }), {id: 'stUser'})));
+  const sv = T('button', 'btn-primary', 'Save settings'); sv.id = 'btnSaveSettings'; sv.addEventListener('click', () => { save(); toast('Settings saved'); }); c.appendChild(sv); w.appendChild(c);
+  const a = T('div', 'card form-stack'); a.id = 'appearanceCard'; a.appendChild(T('div', 'section-label', 'Appearance')); a.appendChild(seg([{v: 'light', l: 'Light'}, {v: 'dark', l: 'Dark'}, {v: 'auto', l: 'Auto'}], s.theme || 'light', v => { setTheme(v); rerender(); })); w.appendChild(a);
+  const st = T('div', 'card form-stack'); st.id = 'storageCard'; st.appendChild(T('div', 'section-label', 'Storage')); add(st, kv('Mode', 'Offline on this phone'), kv('Cloud (Supabase)', 'Not connected'), kv('Shops / products', D.shops.length + ' / ' + D.products.length), kv('Records / insights', liveRecords().length + ' / ' + D.insights.filter(i => i.status !== 'deleted').length)); st.appendChild(T('div', 'note', 'Data is kept in this phone\'s browser storage and works with no internet. Reports in PDF need internet once to load the PDF tool; View / Print always works.')); w.appendChild(st);
+  
+  /* ================= cloud foundation (v2) =================
+     Auth may be enabled with the Supabase publishable/anon key.
+     Business data sync stays disabled until the live schema is mapped and RLS tested.
+     Never place service_role keys or database passwords in this browser app.
+  */
+  const cloudCfgKey = 'retco_oc_cloud_config_v2';
+  let cloudCfg = {};
+  try { cloudCfg = JSON.parse(localStorage.getItem(cloudCfgKey) || '{}') || {}; } catch(e) { cloudCfg = {}; }
+  const cloud = T('div', 'card form-stack'); cloud.id = 'cloudIntegrationCard';
+  cloud.appendChild(T('div', 'section-label', 'Cloud connection & security'));
+  cloud.appendChild(T('div', 'note', 'This app is prepared for the shared RETCO Supabase project. Authentication can be tested here. Business-data sync is intentionally locked until the existing live tables, field mappings and RLS policies are approved. This prevents duplicate orders or unsafe writes.'));
+  const urlField = textInput('url', cloudCfg.url || '', v => { cloudCfg.url = v.trim(); }, {ph:'https://YOUR_PROJECT.supabase.co'});
+  urlField.id = 'ocSupabaseUrl';
+  const keyField = textInput('password', cloudCfg.anonKey || '', v => { cloudCfg.anonKey = v.trim(); }, {ph:'Supabase publishable key / anon key'});
+  keyField.id = 'ocSupabaseAnonKey';
+  add(cloud, labeled('Supabase Project URL', urlField), labeled('Publishable / anon key (never service_role)', keyField));
+  const authEmail = textInput('email', '', () => {}, {ph:'User email'}); authEmail.id = 'ocAuthEmail';
+  const authPass = textInput('password', '', () => {}, {ph:'Password'}); authPass.id = 'ocAuthPassword';
+  add(cloud, labeled('Login email', authEmail), labeled('Login password (not saved)', authPass));
+  const cloudStatus = T('div', 'msg', 'Cloud not configured. Local data remains on this device.'); cloudStatus.id = 'ocCloudStatus'; cloud.appendChild(cloudStatus);
+  const cloudActions = T('div', 'grid2');
+  const saveCloud = T('button', 'btn-secondary', 'Save connection settings'); saveCloud.type='button';
+  saveCloud.addEventListener('click', () => {
+    cloudCfg.url = urlField.value.trim(); cloudCfg.anonKey = keyField.value.trim();
+    try { localStorage.setItem(cloudCfgKey, JSON.stringify(cloudCfg)); cloudStatus.textContent='Connection settings saved on this device. No business records have been uploaded.'; }
+    catch(e) { cloudStatus.textContent='Could not save settings on this device.'; }
+  });
+  const testCloud = T('button', 'btn-primary', 'Test cloud / sign in'); testCloud.type='button';
+  testCloud.addEventListener('click', async () => {
+    cloudCfg.url = urlField.value.trim(); cloudCfg.anonKey = keyField.value.trim();
+    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cloudCfg.url) || !cloudCfg.anonKey) { cloudStatus.textContent='Enter a valid Supabase Project URL and publishable/anon key.'; return; }
+    if (!window.supabase || !window.supabase.createClient) { cloudStatus.textContent='Supabase client library could not load. Check internet and reopen this app.'; return; }
+    try {
+      localStorage.setItem(cloudCfgKey, JSON.stringify(cloudCfg));
+      const client = window.supabase.createClient(cloudCfg.url, cloudCfg.anonKey, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+      const email = authEmail.value.trim(), password = authPass.value;
+      if (email && password) {
+        const result = await client.auth.signInWithPassword({email,password});
+        if (result.error) throw result.error;
+        cloudStatus.textContent='Supabase authentication successful for ' + (result.data.user?.email || email) + '. Business-data sync remains locked pending schema/RLS mapping.';
+        authPass.value='';
+      } else {
+        const result = await client.auth.getSession();
+        if (result.error) throw result.error;
+        cloudStatus.textContent = result.data.session ? 'Supabase session active: ' + (result.data.session.user?.email || 'signed in') + '. Business-data sync remains locked pending schema/RLS mapping.' : 'Supabase project connection initialized. No signed-in session. Enter email and password to test login.';
+      }
+      window.__RETCO_OC_SUPABASE__ = client;
+    } catch(e) { cloudStatus.textContent='Cloud test failed: ' + (e.message || 'Unknown error'); }
+  });
+  const signOut = T('button','btn-secondary','Sign out of cloud'); signOut.type='button';
+  signOut.addEventListener('click', async () => {
+    try { if (window.__RETCO_OC_SUPABASE__) { const r = await window.__RETCO_OC_SUPABASE__.auth.signOut(); if (r.error) throw r.error; } cloudStatus.textContent='Signed out. Local data remains on this device.'; }
+    catch(e) { cloudStatus.textContent='Sign-out failed: ' + (e.message || 'Unknown error'); }
+  });
+  add(cloudActions, saveCloud, testCloud, signOut); cloud.appendChild(cloudActions);
+  cloud.appendChild(T('div','note','Security rule: only a publishable/anon key may be used in this HTML. Supabase RLS must enforce each user’s access. Never paste a service_role key, database password or connection string here.'));
+  w.appendChild(cloud);
+
+  const integration = T('div','card form-stack'); integration.id='appIntegrationCard';
+  integration.appendChild(T('div','section-label','Shared RETCO app integration'));
+  integration.appendChild(T('div','note','Order Collection owns pre-invoice customer orders. Sales Register owns invoices and returns; Field Sales owns shop visits and follow-ups; Business Insights owns structured customer/product feedback; Inventory owns stock movements; Finance owns receipts and payments.'));
+  integration.appendChild(T('div','note','Required hand-off: create one central order using the canonical Shop/Business Partner ID and Product ID. Sales Register converts the order to an invoice by reference. Do not create duplicate order tables or post stock/money from this app.'));
+  integration.appendChild(T('div','note','AI-ready approach: retain original customer/shop wording, structured reason codes, product IDs and timestamps. AI may summarize or classify feedback and suggest follow-ups, but must not approve orders, change prices, post stock or move money automatically.'));
+  const aiPrompt = T('button','btn-secondary','Copy AI summary prompt'); aiPrompt.type='button';
+  aiPrompt.addEventListener('click', async () => {
+    const prompt = 'You are RETCO Business Insights assistant. Analyze the supplied Order Collection records. Preserve original quotes; group feedback by product ID and product name; identify order/no-order reasons, recurring complaints, competitor mentions, demand signals and follow-up actions. Separate facts from hypotheses. Do not invent data, approve orders, change prices, post stock or create financial transactions. Return a concise management summary with evidence and recommended human actions.';
+    try { await navigator.clipboard.writeText(prompt); toast('AI prompt copied'); } catch(e) { cloudStatus.textContent='Clipboard unavailable. You can use the AI prompt described in this section manually.'; }
+  });
+  integration.appendChild(aiPrompt);
+  integration.appendChild(T('div','msg','Current migration status: localStorage only → Supabase Auth setup scaffold added → central order table/field mapping, RLS verification, offline outbox and cloud sync still pending.'));
+  w.appendChild(integration);
+
+  const dl = D.records.filter(r => r.status === 'deleted').sort((x, y) => (y.deletedAt || '').localeCompare(x.deletedAt || ''));
+  const d = T('div', 'card form-stack'); d.id = 'deletedCard'; d.appendChild(T('div', 'section-label', 'Deleted records (' + dl.length + ')')); if (!dl.length) d.appendChild(T('div', 'note', 'No deleted records.'));
+  dl.slice(0, 30).forEach(r => { const row = T('div', 'sale-row'); row.setAttribute('data-del', r.id); const tp = T('div', 'sale-row-top'), mn = T('div', 'sale-row-main'); add(mn, T('div', 'shop', shopCode(r) + ' · ' + shopName(r)), T('div', 'prod', fmtDate(r.date) + ' · ' + r.result)); const b = T('button', 'btn-secondary', 'Restore'); b.addEventListener('click', () => { restoreRecord(r); toast('Record restored'); rerender(); }); add(tp, mn, b); row.appendChild(tp); d.appendChild(row); }); w.appendChild(d);
+  const wp = T('div', 'card form-stack'); wp.appendChild(T('div', 'section-label', 'Start over')); wp.appendChild(T('div', 'note', 'Deletes every shop, product and record on this phone. Save a backup first.'));
+  const bt = armedDelete('Erase all data on this phone', () => { try { localStorage.setItem(KEY + '_prev', JSON.stringify(D)); } catch(e){} const th = D.settings; D = blankDB(); D.settings = th; seedProducts(); save(); shopOpen = null; prodOpen = null; collectF = null; toast('All data erased'); go('home', 'dash'); }); bt.id = 'btnWipe'; wp.appendChild(bt); w.appendChild(wp);
+};
+
+/* ================= boot ================= */
+loadDB(); applyTheme(D.settings.theme || (function(){ try { return localStorage.getItem('retco_oc_theme') || 'light'; } catch(e){ return 'light'; } })());
+$('btnTheme').addEventListener('click', () => { const n = (D.settings.theme === 'dark') ? 'light' : 'dark'; setTheme(n); toast(n === 'dark' ? 'Dark theme' : 'Light theme'); });
+go('home', 'dash');
+window.__oc = {get D(){ return D; }, saveRecord, saveShop, saveProduct, deleteRecord, restoreRecord, shopStats, recordsFiltered, buildReport, backupObject, validateBackup, mergeBackup, replaceWithBackup, insightsTransfer, openFollowUps, reportPdf, loadDB, go, newCollect: () => newCollect(), setNow: null};
+})();
+</script>
+</body>
+</html>
